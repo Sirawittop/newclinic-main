@@ -1,0 +1,38 @@
+.container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    background-color: #f4f4f9;
+}
+  
+.table {
+    width: 80%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    table-layout: fixed; /* ทำให้ทุกช่องมีขนาดเท่ากัน */
+}
+  
+.headerCell, .cell {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #dddddd;
+    box-sizing: border-box; /* รวม padding และ border เข้าไปในขนาดของเซลล์ */
+    height: 50px; /* กำหนดความสูงให้แต่ละเซลล์เท่ากัน */
+}
+
+.headerCell {
+    background-color: #6200ea;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.cell {
+    background-color: #ffffff;
+    color: #000000; /* สีตัวอักษรสำหรับเซลล์ข้อมูล */
+}
+
+.row {
+    background-color: #ffffff;
+}

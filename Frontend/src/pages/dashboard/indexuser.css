@@ -1,0 +1,98 @@
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.left-container {
+  flex: 1; /* Take up half of the available space */
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.right-container {
+  flex: 1; /* Take up half of the available space */
+  padding: 20px;
+}
+
+.calendar-wrapper {
+  width: 100%; /* Fill the available space */
+}
+
+.form-container {
+  text-align: center;
+}
+
+input[type="text"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  height: 100px;
+}
+
+.modal-dialog {
+  max-width: 400px;
+}
+
+.modal-body {
+  text-align: center;
+}
+
+.Modal.Title {
+  text-align: center;
+}
+
+.rs-calendar-table-cell-disabled .rs-calendar-table-cell-date {
+  color: gray !important;
+  cursor: not-allowed !important;
+  text-decoration: line-through;
+}
+
+.buttonAdd, .buttonsave {
+  background-color: gray;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.buttonRemove {
+  background-color: #f44336;
+}
+
+.time-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.time-picker-container .buttonRemove {
+  margin-left: auto;
+}
+.buttonRemove {
+  border: none;
+  background: none; /* Remove background */
+  padding: 0; /* Remove padding */
+  color: #f70404;
+}
+
+.buttonRemove svg {
+  display: block; /* Ensure SVG takes up the full space */
+}
+.modal-content {
+margin-top: 100px;
+}

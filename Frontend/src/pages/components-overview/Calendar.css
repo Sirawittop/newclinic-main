@@ -1,0 +1,121 @@
+/* Calendar.css (หรือไฟล์ CSS ที่คุณใช้) */
+.main-container {
+  background-color: #f0f0f0; /* กำหนดสีเทาให้เป็นพื้นหลัง */
+  padding: 20px; /* เพิ่ม padding เพื่อให้มีขอบรอบสำหรับเนื้อหาภายใน */
+  margin: auto; /* จัดให้ตำแหน่งตรงกลาง */
+  width: 80%; /* กำหนดความกว้างของ container */
+  max-width: 800px; /* กำหนดความกว้างสูงสุด */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเพื่อเน้น container */
+  border-radius: 8px; /* กำหนดขอบมน */
+  text-align: center; /* จัดเนื้อหาภายในตรงกลาง */
+}
+
+.main-container h1 {
+  font-size: 2rem; /* กำหนดขนาดตัวอักษรของหัวข้อ */
+  color: #333; /* กำหนดสีของตัวหนังสือ */
+  margin-bottom: 20px; /* เพิ่มช่องว่างด้านล่างของหัวข้อ */
+}
+.wrapper {
+  margin-left: 15px;
+}
+/* Calendar.css */
+/* Calendar.css */
+.main-container {
+  /* existing styles */
+}
+
+.secondary-container {
+  background-color: #ffffff; /* กำหนดสีเทาให้เป็นพื้นหลัง */
+  padding: 20px; /* เพิ่ม padding เพื่อให้มีขอบรอบสำหรับเนื้อหาภายใน */
+  margin: auto; /* จัดให้ตำแหน่งตรงกลาง */
+  width: 80%; /* กำหนดความกว้างของ container */
+  max-width: 800px; /* กำหนดความกว้างสูงสุด */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเพื่อเน้น container */
+  border-radius: 8px; /* กำหนดขอบมน */
+  text-align: center; /* จัดเนื้อหาภายในตรงกลาง */
+}
+
+.secondary-container h1 {
+  font-size: 2rem; /* กำหนดขนาดตัวอักษรของหัวข้อ */
+  color: #333; /* กำหนดสีของตัวหนังสือ */
+  margin-bottom: 20px; /* เพิ่มช่องว่างด้านล่างของหัวข้อ */
+}
+
+/* Calendar.css */
+/* Calendar.css */
+.secondary-container{
+  /* existing styles */
+}
+.secondary-container {
+  background-color: gray;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.time-slot-button {
+  display: block;
+  margin: 10px 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.time-slot-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.75);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal {
+  position: relative;
+  width: 400px;
+  max-width: 80%;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transform: translateX(10%); /* Adjust this value to move the modal slightly to the right */
+}
+
+.modal-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-container h2 {
+  margin-top: 0;
+}
+
+.modal-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-container label {
+  margin-bottom: 10px;
+}
+
+.modal-container button {
+  margin-top: 10px;
+}
+.datepicker-day-label {
+  /* ส่วนที่คุณต้องการเปลี่ยน */
+  content: "เสาร์";
+}

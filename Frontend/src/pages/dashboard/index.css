@@ -1,0 +1,19 @@
+.modal-content {
+  /* Modal content styles */
+  /* set center */
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 620px;
+
+}
+/* index.css */
+.rs-calendar-table-cell-disabled .rs-calendar-table-cell-date {
+  color: gray !important;
+  cursor: not-allowed !important;
+  text-decoration: line-through;
+}
+
+
+

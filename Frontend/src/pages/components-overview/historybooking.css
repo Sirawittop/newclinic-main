@@ -1,0 +1,35 @@
+.container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* จัดตำแหน่งให้สูงขึ้น */
+    height: 100vh;
+    background-color: #f4f4f9;
+    margin-top: 20px; /* เพิ่มระยะห่างจากขอบด้านบน */
+}
+  
+.table {
+    width: 80%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-top: 20px; /* เพิ่มระยะห่างจากขอบด้านบน */
+}
+  
+.headerCell {
+    background-color: #6200ea;
+    color: #ffffff;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #dddddd;
+}
+  
+.row {
+    background-color: #ffffff;
+}
+  
+.cell {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #dddddd;
+}
