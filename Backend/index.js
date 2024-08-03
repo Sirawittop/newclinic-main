@@ -312,12 +312,11 @@ app.put("/api/editpassword", async (req, res) => {
 });
 // post api for booking time
 app.post("/api/booking", async (req, res) => {
-  const { name, phone, email, date, time, type } = req.body;
-  console.log(name, phone, email, date, time, type);
+  const { name, phone, email, date, time, type,status } = req.body;
   try {
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, phone, email, date, time, type]
+      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type,status_id) VALUES (?, ?, ?, ?, ?, ? ,?)",
+      [name, phone, email, date, time, type, status]
     );
 
     // Send confirmation email
@@ -335,7 +334,7 @@ app.post("/api/booking", async (req, res) => {
 ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
 
 🔔 ข้อควรจำ:
-- หากต้องการยกเลิกหรือเลื่อนนัด กรุณาแจ้งล่วงหน้าอย่างน้อย 24 ชั่วโมง
+- หากต้องการยกเลิกคิวจอง กรุณากดยกเลิกในระบบก่อนเวลานัด 24 ชั่วโมง
 
 🙏 ขอบคุณที่เลือกใช้บริการคลินิกของเรา
 เราหวังว่าคุณจะได้รับประสบการณ์ที่ดีในการรักษา
@@ -372,29 +371,42 @@ app.get("/api/delslottime", async (req, res) => {
     });
   }
 });
-app.get("/api/historybooking", async (req, res) => {
+
+app.get('/api/historybooking', async (req, res) => {
   try {
-   
-    const authHeader = req.headers["authorization"];
-    let authToken = "";
-    if (authHeader) {
-      authToken = authHeader.split(" ")[1];
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      return res.status(401).json({ message: 'Authorization header missing' });
     }
-    const user = jwt.verify(authToken, secret);
+
+    const authToken = authHeader.split(' ')[1];
+    if (!authToken) {
+      return res.status(401).json({ message: 'Token missing' });
+    }
+
+    let user;
+    try {
+      user = jwt.verify(authToken, secret);
+    } catch (error) {
+      return res.status(401).json({ message: 'Invalid token', error });
+    }
+
     const [results] = await conn.query(
-      "SELECT DATE_FORMAT(dataday, time,reservation_type FROM reservationqueue WHERE email = ?",
-      user.email
+      `SELECT DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type 
+       FROM reservationqueue 
+       WHERE email = ?`,
+      [user.email]
     );
+
     res.json({
-      message: "search history booking success",
+      message: 'Search history booking success',
       data: results,
     });
   } catch (error) {
-    console.log("error", error);
-    res.status(403).json({
-      message: "search history booking failed",
+    console.log('Error', error);
+    res.status(500).json({
+      message: 'Search history booking failed',
       error,
     });
   }
 });
-

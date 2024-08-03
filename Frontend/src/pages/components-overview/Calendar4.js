@@ -82,7 +82,8 @@ const Calendar4 = () => {
       email: userData[0].email,
       type: formData.appointmentType,
       time: formData.selectedTime,
-      date: selectedDate
+      date: selectedDate,
+      status: 1
     };
 
     const token = localStorage.getItem('token');
