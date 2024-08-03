@@ -3,6 +3,7 @@ import axios from 'axios'; // Import Axios
 
 // material-ui
 import { Button, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // third party
 import * as Yup from 'yup';
@@ -26,6 +27,8 @@ const AuthRegister = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -56,7 +59,7 @@ const AuthRegister = () => {
             const response = await axios.post('http://localhost:8000/api/register', values);
             // redirect to login page
             if (response.status === 201) {
-              window.location.href = '/free/login';
+              navigate('/login');
             }
             setStatus({ success: true });
             setSubmitting(false);

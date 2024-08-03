@@ -131,7 +131,7 @@ app.post("/api/login", async (req, res) => {
 
     // สร้าง token jwt
     const token = jwt.sign({ email, role: "admin" }, secret, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     res.json({

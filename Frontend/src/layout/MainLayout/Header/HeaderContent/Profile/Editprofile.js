@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, TextField, Typography, Snackbar, Alert } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
   const [fullName, setFullName] = useState('');
@@ -12,21 +13,39 @@ const EditProfile = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
 
+  const navigate = useNavigate();
   useEffect(() => {
-    // get token from local storage
+    // Get token from local storage
     const token = localStorage.getItem('token');
-    axios
-      .get('http://localhost:8000/api/usertoken', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then((response) => {
-        setFullName(response.data.users[0].name);
-        setEmail(response.data.users[0].email);
-        setPhoneNumber(response.data.users[0].numphone);
-      });
-  }, []);
+    
+    // Ensure token exists before making the request
+    if (token) {
+      axios
+        .get('http://localhost:8000/api/usertoken', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then((response) => {
+          // Assuming response.data.users is an array
+          if (response.data.users && response.data.users.length > 0) {
+            setFullName(response.data.users[0].name);
+            setEmail(response.data.users[0].email);
+            setPhoneNumber(response.data.users[0].numphone);
+          } else {
+            console.warn('No user data found in response');
+            navigate('/login'); // Redirect to login if no user data
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+          navigate('/login'); // Redirect to login on error
+        });
+    } else {
+      console.warn('No token found in local storage');
+      navigate('/login'); // Redirect to login if no token
+    }
+  }, [navigate]); // Add navigate to dependency array
 
   const handleFullNameChange = (e) => {
     const { value } = e.target;

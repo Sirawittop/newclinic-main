@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'react';
 import axios from 'axios'; // Import Axios
+import { useNavigate } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -34,6 +35,8 @@ function TabPanel({ children, value, index, ...other }) {
     </div>
   );
 }
+
+
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -69,12 +72,16 @@ const Profile = () => {
 
   const theme = useTheme();
 
+  const navigate = useNavigate();
+
   const isDataloaded = userData.length !== 0;
+
 
   const handleLogout = async () => {
     // logout
     localStorage.removeItem('token');
-    window.location.href = '/free/login';
+    navigate('/login');
+
   };
 
   const anchorRef = useRef(null);
@@ -101,7 +108,7 @@ const Profile = () => {
   // check token
   const token = localStorage.getItem('token');
   if (!token) {
-    window.location.href = '/free/login';
+    navigate('/login');
   }
 
   console.log('userData', userData);

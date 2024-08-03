@@ -4,7 +4,7 @@ import axios from 'axios'; // Import Axios
 
 // material-ui
 import { Button, FormHelperText, Grid, Link, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -27,6 +27,10 @@ const AuthLogin = () => {
     event.preventDefault();
   };
 
+  const navigate = useNavigate();
+  
+
+
   return (
     <>
       <Formik
@@ -46,23 +50,15 @@ const AuthLogin = () => {
               password: values.password
             });
 
-            console.log('response', response);
-
             // Check if the response status is OK (200)
             if (response.status === 200) {
-              // redirec to the dashboard
-              // save token to local storage
               localStorage.setItem('token', response.data.token);
-
-              window.location.href = '/free/dashboard/default';
+              navigate('/dashboard', { replace: true });
             }
           } catch (err) {
-            // Handle error
             if (err.response && err.response.status === 400) {
-              // If error status is 400, set the error message returned from the server
               setErrors({ submit: err.response.data.message });
             } else {
-              // For other errors, set a generic error message
               setErrors({ submit: 'An error occurred. Please try again.' });
             }
           }

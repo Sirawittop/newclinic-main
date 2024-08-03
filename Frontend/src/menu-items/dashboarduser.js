@@ -1,26 +1,29 @@
 // assets
-import { CalendarOutlined } from '@ant-design/icons';
-
-// icons
-const icons = {
-  CalendarOutlined
-};
-
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
 const Dashboarduser = {
   id: 'group-dashboard',
-  title: 'Navigation',
+  title: 'สัตวแพทย์',
   type: 'group',
   children: [
     {
+      id: 'booking',
+      title: 'การจอง',
+      type: 'item',
+      url: '/Booking',
+      icon: MeetingRoomIcon
+    },
+    {
       id: 'dashboarduser',
-      title: 'Dashboarduser',
+      title: 'จัดตารางเวลาว่าง',
       type: 'item',
       url: '/indexuser',
-      icon: icons.CalendarOutlined,
+      icon: EditCalendarIcon,
       breadcrumbs: false
     },
+
   ]
 };
 

@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { Calendar } from 'rsuite';
 import { Modal, Button } from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
 import 'rsuite/Calendar/styles/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
+
 export default function App() {
-  // Get token from local storage
+  console.log('Hello');
+  const navigate = useNavigate();
+
   const token = localStorage.getItem('token');
   if (!token) {
-    window.location.href = '/login';
+    navigate('/login');
   }
 
   const [selectedDate, setSelectedDate] = useState(null);

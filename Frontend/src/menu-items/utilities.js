@@ -1,55 +1,39 @@
-// assets
-import {
-  AppstoreAddOutlined,
-  AntDesignOutlined,
-  BarcodeOutlined,
-  BgColorsOutlined,
-  FontSizeOutlined,
-  LoadingOutlined,
-  BookOutlined,
-  SolutionOutlined
-} from '@ant-design/icons';
 
-// icons
-const icons = {
-  FontSizeOutlined,
-  BgColorsOutlined,
-  BarcodeOutlined,
-  AntDesignOutlined,
-  LoadingOutlined,
-  AppstoreAddOutlined,
-  BookOutlined,
-  SolutionOutlined
-};
+import PetsIcon from '@mui/icons-material/Pets';
+import HomeIcon from '@mui/icons-material/Home';
+import HistoryIcon from '@mui/icons-material/History';
+
 
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
 
 const utilities = {
   id: 'utilities',
-  title: 'Utilities',
+  title: 'ผู้ใช้',
   type: 'group',
   children: [
     {
+      id: 'dashboard',
+      title: 'หน้าหลัก',
+      type: 'item',
+      url: '/dashboard',
+      icon: HomeIcon,
+      breadcrumbs: false
+    },
+    {
       id: 'util-typography',
-      title: 'Typography',
+      title: 'จองคิวรักษาสัตว์',
       type: 'item',
       url: '/typography',
-      icon: icons.FontSizeOutlined
+      icon: PetsIcon
     },
     {
       id: 'history-booking',
-      title: 'History Booking',
+      title: 'ประวัติการจองคิว',
       type: 'item',
       url: '/Historybooking',
-      icon: icons.BookOutlined
+      icon: HistoryIcon
     },
-    {
-      id: 'booking',
-      title: 'Booking',
-      type: 'item',
-      url: '/Booking',
-      icon: icons.SolutionOutlined
-    }
+   
   ]
 };
 export default utilities;
