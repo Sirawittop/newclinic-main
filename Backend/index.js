@@ -410,3 +410,47 @@ app.get('/api/historybooking', async (req, res) => {
     });
   }
 });
+
+// make api sent email for reset password
+app.post("/api/forgotpassword", async (req, res) => {
+
+  console.log("req.body");
+
+  const { email } = req.body;
+  try {
+    const [results] = await conn.query(
+      "SELECT * FROM users WHERE email = ?",
+      email
+    );
+
+    if (results.length === 0) {
+      return res.status(400).send({ message: "Email not found" });
+    }
+
+    const subject = "Reset Password";
+    const text = `🔒 การรีเซ็ตรหัสผ่าน 🔒
+
+สวัสดีคุณ ${results[0].name} 👋
+
+คุณสามารถกดลิงค์ด้านล่างเพื่อรีเซ็ตรหัสผ่านของคุณ
+
+🔗 http://localhost:3000/resetpassword/${results[0].email
+      .split("@")
+      .join("%40")}
+}
+`;
+    sendEmail(email, subject, text);
+
+    res.json({
+      message: "Email sent successfully",
+    });
+  }
+  catch (error) {
+    console.log("error", error);
+    res.status(403).json({
+      message: "Email sent failed",
+      error,
+    });
+  }
+}
+);
