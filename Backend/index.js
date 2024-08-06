@@ -312,11 +312,11 @@ app.put("/api/editpassword", async (req, res) => {
 });
 // post api for booking time
 app.post("/api/booking", async (req, res) => {
-  const { name, phone, email, date, time, type,status } = req.body;
+  const { name, phone, email, date, time, type} = req.body;
   try {
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type,status_id) VALUES (?, ?, ?, ?, ?, ? ,?)",
-      [name, phone, email, date, time, type, status]
+      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type) VALUES (?, ?,  ?, ?, ? ,?)",
+      [name, phone, email, date, time, type]
     );
 
     // Send confirmation email

@@ -75,14 +75,29 @@ const Calendar4 = () => {
     setAvailableTimeRange(timeRange);
   };
 
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+const formatTime = (time) => {
+  const [startTime] = time.split(' - ');
+  const [hour] = startTime.split('.'); // Split the time string by '.'
+  return `${hour.padStart(2, '0')}:00`; // Pad the hour with leading zero if needed and append ':00:00'
+};
+
+
+
   const acceptqueue = async () => {
     const data = {
       name: userData[0].name,
       phone: userData[0].numphone,
       email: userData[0].email,
       type: formData.appointmentType,
-      time: formData.selectedTime,
-      date: selectedDate,
+      time: formatTime(formData.selectedTime),
+      date: formatDate(selectedDate),
       status: 1
     };
 
