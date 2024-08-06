@@ -70,10 +70,10 @@ let conn = null;
 const initMySQL = async () => {
   conn = await mysql.createConnection({
     host: "localhost",
-    port: 3306,
+    port: 8889,
     user: "root",
-    password: "",
-    database: "clinic_db",
+    password: "root",
+    database: "AnimalClinic",
   });
 };
 

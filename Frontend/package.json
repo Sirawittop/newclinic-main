@@ -3,7 +3,7 @@
   "react": "^18.3.1",
   "version": "1.2.0",
   "private": true,
-  "homepage": "https://mantisdashboard.io/free",
+  "homepage": "https://mantisdashboard.io/AnimalClinic/login",
   "dependencies": {
     "@ant-design/colors": "^7.0.2",
     "@ant-design/icons": "^5.2.6",
