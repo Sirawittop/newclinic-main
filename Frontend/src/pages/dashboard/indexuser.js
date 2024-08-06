@@ -1,119 +1,189 @@
-import React, { useState } from 'react';
-import { Calendar } from 'rsuite';
-import { Modal } from 'react-bootstrap';
-import 'rsuite/Calendar/styles/index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect } from 'react';
+import ReactHorizontalDatePicker from 'react-horizontal-strip-datepicker';
+import 'react-horizontal-strip-datepicker/dist/ReactHorizontalDatePicker.css';
 import './indexuser.css';
-import dayjs from 'dayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import AddIcon from '@mui/icons-material/Add';
-import SaveIcon from '@mui/icons-material/Save';
-import RemoveIcon from '@mui/icons-material/Remove';
+import axios from 'axios';
 
-export default function App() {
+const IndexUser = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [timePickers, setTimePickers] = useState([{ open: dayjs('2022-04-17T15:30'), close: dayjs('2022-04-17T15:30') }]);
-  const [savedTime] = useState([]);
-  //setSavedTime
-  function handleDateSelect(date) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const selectedDate = new Date(date);
-    selectedDate.setHours(0, 0, 0, 0);
-    if (selectedDate.getTime() < today.getTime()) {
-      return;
+  const [availableTimeRange, setAvailableTimeRange] = useState([]);
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios
+      .get('http://localhost:8000/api/delslottime', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        setBookedSlots(response.data.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching booked slots:', error);
+      });
+  }, []);
+
+  const handleSelectedDay = (date) => {
+    setSelectedDate(date);
+
+    let timeRange = [];
+    switch (date.getDay()) {
+      case 0: // Sunday
+      case 3: // Wednesday
+        timeRange = 'วันนี้ร้านปิดค่ะ คุณสามารถจองคิวได้ในวันอื่นได้ค่ะ';
+        break;
+      default:
+        timeRange = [
+          '12:00 - 12:30',
+          '12:30 - 13:00',
+          '13:00 - 13:30',
+          '13:30 - 14:00',
+          '14:00 - 14:30',
+          '14:30 - 15:00',
+          '15:00 - 15:30',
+          '15:30 - 16:00',
+          '16:00 - 16:30',
+          '16:30 - 17:00',
+          '17:00 - 17:30',
+          '17:30 - 18:00',
+          '18:00 - 18:30',
+          '18:30 - 19:00',
+          '19:00 - 19:30'
+        ];
+        break;
     }
-    setSelectedDate(selectedDate);
-    setShowModal(true);
+
+    setAvailableTimeRange(timeRange);
+  };
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
-  function handleAddIconClick() {
-    if (timePickers.length < 3) {
-      setTimePickers([...timePickers, { open: dayjs(), close: dayjs() }]);
+  const formatTime = (time) => {
+    const [startTime] = time.split(' - ');
+    const [hour] = startTime.split('.'); // Split the time string by '.'
+    return `${hour.padStart(2, '0')}:00`; // Pad the hour with leading zero if needed and append ':00:00'
+  };
+
+  const handleCheckboxChange = (timeRange) => {
+    setSelectedTimes((prevSelectedTimes) => {
+      if (prevSelectedTimes.includes(timeRange)) {
+        return prevSelectedTimes.filter((time) => time !== timeRange);
+      } else {
+        return [...prevSelectedTimes, timeRange];
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedTimes([]);
+    } else {
+      setSelectedTimes(availableTimeRange.filter(timeRange => !bookedSlots.some(slot => slot.time === timeRange.split(' - ')[0])));
     }
-  }
-  function handleClose() {
-    setShowModal(false);
-  }
+    setSelectAll(!selectAll);
+  };
 
-  function handleTimeChange(index, type, newValue) {
-    const newTimePickers = [...timePickers];
-    newTimePickers[index][type] = newValue;
-    setTimePickers(newTimePickers);
-  }
+  const bookSlots = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      for (const timeRange of selectedTimes) {
+        const data = {
+          time: formatTime(timeRange),
+          date: formatDate(selectedDate),
+          status: 1
+        };
+        await axios.post('http://localhost:8000/api/booking', data, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
 
-  function handleDeleteIconClick(index) {
-    const newTimePickers = timePickers.filter((_, i) => i !== index);
-    setTimePickers(newTimePickers);
-  }
-  function handleSaveButtonClick() {
-    //   if (selectedDate) {
-    //     const today = new Date();
-    //     today.setHours(0, 0, 0, 0);
-    //     const selected = new Date(selectedDate);
-    //     selected.setHours(0, 0, 0, 0);
-    //     if (selected >= today) {
-    //       setSavedTime(timePickers);
-    //     }
-    //   }
-    //   setShowModal(false);
-    console.log(selectedDate);
-  }
+      setBookedSlots([
+        ...bookedSlots,
+        ...selectedTimes.map((timeRange) => ({
+          dataday: selectedDate.toLocaleDateString(),
+          time: timeRange.split(' - ')[0]
+        }))
+      ]);
+
+      alert('จองคิวสำเร็จ');
+      setSelectedTimes([]);
+      setSelectAll(false);
+    } catch (error) {
+      console.error(error);
+      alert('เกิดข้อผิดพลาดในการจองคิว');
+    }
+  };
 
   return (
-    <div className="main-container">
-      <div className="left-container">
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {timePickers.map((timePicker, index) => (
-            <div key={index} className="time-picker-container">
-              <TimePicker
-                label={`เลือกเวลาเปิด ${index + 1}`}
-                value={timePicker.open}
-                onChange={(newValue) => handleTimeChange(index, 'open', newValue)}
-              />
-              <TimePicker
-                label={`เลือกเวลาปิด ${index + 1}`}
-                value={timePicker.close}
-                onChange={(newValue) => handleTimeChange(index, 'close', newValue)}
-              />
-              <button onClick={() => handleDeleteIconClick(index)} type="button" aria-label="buttonRemove" className="buttonRemove">
-                <RemoveIcon />
-              </button>
+    <div>
+      <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
+      {selectedDate && bookedSlots && (
+        <div>
+          <p>วันที่จอง {selectedDate.toLocaleDateString()}</p>
+          {typeof availableTimeRange === 'string' ? (
+            <p>{availableTimeRange}</p>
+          ) : (
+            <div>
+              <p>เลือกช่วงเวลาที่ต้องการจอง</p>
+              <div style={{ marginBottom: '10px' }}>
+                <input
+                  type="checkbox"
+                  id="select-all"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+                <label htmlFor="select-all" style={{ marginLeft: '5px' }}>
+                  เลือกทั้งหมด
+                </label>
+              </div>
+              {availableTimeRange.map((timeRange, index) => {
+                const dateKey = selectedDate.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: '2-digit'
+                });
+                const startTime = timeRange.split(' - ')[0]; // Extract the start time
+                const isBooked = bookedSlots.some((slot) => {
+                  return slot.dataday === dateKey && slot.time === startTime;
+                });
+
+                return (
+                  <div key={index} style={{ marginRight: '5px', marginTop: '10px' }}>
+                    <input
+                      type="checkbox"
+                      id={`time-${index}`}
+                      disabled={isBooked}
+                      checked={selectedTimes.includes(timeRange)}
+                      onChange={() => handleCheckboxChange(timeRange)}
+                    />
+                    <label htmlFor={`time-${index}`} style={{ marginLeft: '5px' }}>
+                      {timeRange}
+                    </label>
+                  </div>
+                );
+              })}
+              {selectedTimes.length > 0 && (
+                <button onClick={bookSlots} style={{ marginTop: '10px' }}>
+                  จองคิว
+                </button>
+              )}
             </div>
-          ))}
-        </LocalizationProvider>
-        <button onClick={handleAddIconClick} type="button" aria-label="buttonAdd" className="buttonAdd">
-          <AddIcon />
-        </button>
-        <button onClick={handleSaveButtonClick} type="button" aria-label="buttonSave" className="buttonsave">
-          <SaveIcon />
-        </button>
-      </div>
-      <div className="right-container">
-        <div className="calendar-wrapper">
-          <Calendar bordered onSelect={handleDateSelect} disabledDate={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))} />
+          )}
         </div>
-      </div>
-      <Modal show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>ช่วงเวลาที่เปิดให้จองคิว</Modal.Title>
-        </Modal.Header>
-        <div className="form-container">
-          <p>วันที่: {selectedDate ? selectedDate.toLocaleDateString() : ''}</p>
-          <ul>
-            {selectedDate &&
-              savedTime.length > 0 &&
-              selectedDate.toLocaleDateString() === new Date().toLocaleDateString() &&
-              savedTime.map((time, index) => (
-                <li key={index}>{`ช่วงที่ ${index + 1}: ${time.open.format('HH:mm')} - ${time.close.format('HH:mm')}`}</li>
-              ))}
-          </ul>
-        </div>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
+      )}
     </div>
   );
-}
+};
+
+export default IndexUser;

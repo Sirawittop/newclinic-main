@@ -1,127 +1,126 @@
-import React, { useState } from 'react';
-import { Calendar } from 'rsuite';
-import { Modal, Button } from 'react-bootstrap';
-import {useNavigate} from 'react-router-dom';
-import 'rsuite/Calendar/styles/index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography as MuiTypography } from '@mui/material';
+import Calendar4 from './indexuser';
+import './indexuser.css';
+import axios from 'axios';
 
+const Index = () => {
+  const [reservedSlots, setReservedSlots] = useState([]);
 
-export default function App() {
-  console.log('Hello');
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchReservedSlots = async () => {
+      try {
+        axios
+          .get('http://localhost:8000/api/delslottime')
+          .then((response) => {
+            setReservedSlots(response.data.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching reserved slots:', error);
+          });
+      } catch (error) {
+        console.error('Failed to fetch reserved slots', error);
+      }
+    };
 
-  const token = localStorage.getItem('token');
-  if (!token) {
-    navigate('/login');
-  }
+    fetchReservedSlots();
+  }, []);
 
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [petName, setPetName] = useState('');
-  const [purpose, setPurpose] = useState('');
-  const [note, setNote] = useState('');
-
-  // Function to handle date selection
-  function handleDateSelect(date) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const selectedDate = new Date(date);
-    selectedDate.setHours(0, 0, 0, 0);
-
-    if (selectedDate.getTime() < today.getTime()) {
-      return;
-    }
-
-    setSelectedDate(selectedDate);
-    setShowModal(true);
-  }
-
-  function handleSubmit() {
-    // Perform form submission logic here
-    if (name && phone && petName && purpose) {
-      // Example: console.log form data
-      console.log({ name, phone, petName, purpose, note, date: selectedDate });
-
-      setShowModal(false);
-    } else {
-      alert('กรุณากรอกข้อมูลที่จำเป็นทั้งหมด');
-    }
-  }
-
-  function handleClose() {
-    setName('');
-    setPhone('');
-    setPetName('');
-    setPurpose('');
-    setNote('');
-    setShowModal(false);
-  }
+  const timeSlots = {
+    Monday: [
+      '12:00 - 12:30',
+      '12:30 - 13:00',
+      '13:00 - 13:30',
+      '13:30 - 14:00',
+      '14:00 - 14:30',
+      '14:30 - 15:00',
+      '15:00 - 15:30',
+      '15:30 - 16:00',
+      '16:00 - 16:30',
+      '16:30 - 17:00',
+      '17:00 - 17:30',
+      '17:30 - 18:00',
+      '18:00 - 18:30',
+      '18:30 - 19:00'
+    ],
+    Tuesday: [
+      '12:00 - 12:30',
+      '12:30 - 13:00',
+      '13:00 - 13:30',
+      '13:30 - 14:00',
+      '14:00 - 14:30',
+      '14:30 - 15:00',
+      '15:00 - 15:30',
+      '15:30 - 16:00',
+      '16:00 - 16:30',
+      '16:30 - 17:00',
+      '17:00 - 17:30',
+      '17:30 - 18:00',
+      '18:00 - 18:30',
+      '18:30 - 19:00'
+    ],
+    Wednesday: 'วันนี้ร้านปิดค่ะ คุณสามารถจองคิวได้ในวันอื่นได้ค่ะ',
+    Thursday: [
+      '12:00 - 12:30',
+      '12:30 - 13:00',
+      '13:00 - 13:30',
+      '13:30 - 14:00',
+      '14:00 - 14:30',
+      '14:30 - 15:00',
+      '15:00 - 15:30',
+      '15:30 - 16:00',
+      '16:00 - 16:30',
+      '16:30 - 17:00',
+      '17:00 - 17:30',
+      '17:30 - 18:00',
+      '18:00 - 18:30',
+      '18:30 - 19:00'
+    ],
+    Friday: [
+      '12:00 - 12:30',
+      '12:30 - 13:00',
+      '13:00 - 13:30',
+      '13:30 - 14:00',
+      '14:00 - 14:30',
+      '14:30 - 15:00',
+      '15:00 - 15:30',
+      '15:30 - 16:00',
+      '16:00 - 16:30',
+      '16:30 - 17:00',
+      '17:00 - 17:30',
+      '17:30 - 18:00',
+      '18:00 - 18:30',
+      '18:30 - 19:00'
+    ],
+    Saturday: [
+      '12:00 - 12:30',
+      '12:30 - 13:00',
+      '13:00 - 13:30',
+      '13:30 - 14:00',
+      '14:00 - 14:30',
+      '14:30 - 15:00',
+      '15:00 - 15:30',
+      '15:30 - 16:00',
+      '16:00 - 16:30',
+      '16:30 - 17:00',
+      '17:00 - 17:30',
+      '17:30 - 18:00',
+      '18:00 - 18:30',
+      '18:30 - 19:00'
+    ],
+    Sunday: 'วันนี้ร้านปิดค่ะ คุณสามารถจองคิวได้ในวันอื่นได้ค่ะ'
+  };
 
   return (
-    <div className="container">
-      <div className="calendar-wrapper">
-        <Calendar bordered onSelect={handleDateSelect} disabledDate={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))} />
+    <Container maxWidth="md">
+      <MuiTypography variant="h3" align="center" gutterBottom>
+        จองคิวรักษาสัตว์
+      </MuiTypography>
+      <div className="main-container">
+        <Calendar4 timeSlots={timeSlots} reservedSlots={reservedSlots} />
       </div>
-      <Modal show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>กรอกข้อมูลผู้จอง</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div style={{ textAlign: 'center', justifyContent: 'center' }}>
-            <p>วันที่: {selectedDate ? selectedDate.toLocaleDateString() : ''}</p>
-            <input type="text" placeholder="ชื่อ" value={name} onChange={(e) => setName(e.target.value)} style={{ width: '300px' }} />
-            <br />
-            <br />
-            <input
-              type="text"
-              placeholder="เบอร์โทรศัพท์"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              style={{ width: '300px' }}
-            />
-            <br />
-            <br />
-            <input
-              type="text"
-              placeholder="ชื่อสัตว์"
-              value={petName}
-              onChange={(e) => setPetName(e.target.value)}
-              style={{ width: '300px' }}
-            />
-            <br />
-            <br />
-            <select value={purpose} onChange={(e) => setPurpose(e.target.value)} style={{ width: '300px' }}>
-              <option value="" disabled>
-                ประเภทการจอง
-              </option>
-              <option value="ฉีดวักซีน">ฉีดวักซีน</option>
-              <option value="ฉีดยา">ฉีดยา</option>
-              <option value="ตรวจร่างกาย">ตรวจร่างกาย</option>
-            </select>
-            <br />
-            <br />
-            <textarea
-              placeholder="หมายเหตุ"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              style={{ width: '300px', height: '100px' }}
-              maxLength="150"
-            />
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+    </Container>
   );
-}
+};
+
+export default Index;
