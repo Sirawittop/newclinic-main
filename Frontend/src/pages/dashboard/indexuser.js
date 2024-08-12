@@ -29,12 +29,14 @@ const IndexUser = () => {
 
   const handleSelectedDay = (date) => {
     setSelectedDate(date);
+    setSelectedTimes([]); // Clear selected times when a new date is selected
+    setSelectAll(false); // Reset the "Select All" checkbox
 
     let timeRange = [];
     switch (date.getDay()) {
       case 0: // Sunday
       case 3: // Wednesday
-        timeRange = 'วันนี้ร้านปิดค่ะ คุณสามารถจองคิวได้ในวันอื่นได้ค่ะ';
+        timeRange = 'วันนี้ร้านปิดค่ะ';
         break;
       default:
         timeRange = [
@@ -85,11 +87,11 @@ const IndexUser = () => {
 
   const handleSelectAll = () => {
     if (selectAll) {
-      setSelectedTimes([]);
+      setSelectedTimes([]); // Deselect all if already selected
     } else {
-      setSelectedTimes(availableTimeRange.filter(timeRange => !bookedSlots.some(slot => slot.time === timeRange.split(' - ')[0])));
+      setSelectedTimes(availableTimeRange); // Select all available time slots
     }
-    setSelectAll(!selectAll);
+    setSelectAll(!selectAll); // Toggle the selectAll state
   };
 
   const bookSlots = async () => {
