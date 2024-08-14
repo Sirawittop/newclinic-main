@@ -132,12 +132,12 @@ const IndexUser = () => {
       <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
       {selectedDate && bookedSlots && (
         <div>
-          <p>วันที่จอง {selectedDate.toLocaleDateString()}</p>
+          <p>วันที่เลือก {selectedDate.toLocaleDateString()}</p>
           {typeof availableTimeRange === 'string' ? (
             <p>{availableTimeRange}</p>
           ) : (
             <div>
-              <p>เลือกช่วงเวลาที่ต้องการจอง</p>
+              <p>เลือกช่วงเวลาที่ต้องการลบ</p>
               <div style={{ marginBottom: '10px' }}>
                 <input
                   type="checkbox"
@@ -177,7 +177,7 @@ const IndexUser = () => {
               })}
               {selectedTimes.length > 0 && (
                 <button onClick={bookSlots} style={{ marginTop: '10px' }}>
-                  จองคิว
+                  ลบคิวจอง
                 </button>
               )}
             </div>
