@@ -3,6 +3,8 @@ import ReactHorizontalDatePicker from 'react-horizontal-strip-datepicker';
 import 'react-horizontal-strip-datepicker/dist/ReactHorizontalDatePicker.css';
 import './indexuser.css';
 import axios from 'axios';
+import Container from '@mui/material/Container';
+import MuiTypography from '@mui/material/Typography';
 
 const IndexUser = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -128,63 +130,68 @@ const IndexUser = () => {
   };
 
   return (
-    <div>
-      <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
-      {selectedDate && bookedSlots && (
-        <div>
-          <p>วันที่เลือก {selectedDate.toLocaleDateString()}</p>
-          {typeof availableTimeRange === 'string' ? (
-            <p>{availableTimeRange}</p>
-          ) : (
-            <div>
-              <p>เลือกช่วงเวลาที่ต้องการลบ</p>
-              <div style={{ marginBottom: '10px' }}>
-                <input
-                  type="checkbox"
-                  id="select-all"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-                <label htmlFor="select-all" style={{ marginLeft: '5px' }}>
-                  เลือกทั้งหมด
-                </label>
-              </div>
-              {availableTimeRange.map((timeRange, index) => {
-                const dateKey = selectedDate.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: '2-digit'
-                });
-                const startTime = timeRange.split(' - ')[0]; // Extract the start time
-                const isBooked = bookedSlots.some((slot) => {
-                  return slot.dataday === dateKey && slot.time === startTime;
-                });
+    <Container maxWidth="md">
+      <MuiTypography variant="h3" align="center" gutterBottom>
+        
+      </MuiTypography>
+      <div className="main-container">
+        <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
+        {selectedDate && bookedSlots && (
+          <div>
+            <p>วันที่เลือก {selectedDate.toLocaleDateString()}</p>
+            {typeof availableTimeRange === 'string' ? (
+              <p>{availableTimeRange}</p>
+            ) : (
+              <div>
+                <p>เลือกช่วงเวลาที่ต้องการลบ</p>
+                <div style={{ marginBottom: '10px' }}>
+                  <input
+                    type="checkbox"
+                    id="select-all"
+                    checked={selectAll}
+                    onChange={handleSelectAll}
+                  />
+                  <label htmlFor="select-all" style={{ marginLeft: '5px' }}>
+                    เลือกทั้งหมด
+                  </label>
+                </div>
+                {availableTimeRange.map((timeRange, index) => {
+                  const dateKey = selectedDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: '2-digit'
+                  });
+                  const startTime = timeRange.split(' - ')[0]; // Extract the start time
+                  const isBooked = bookedSlots.some((slot) => {
+                    return slot.dataday === dateKey && slot.time === startTime;
+                  });
 
-                return (
-                  <div key={index} style={{ marginRight: '5px', marginTop: '10px' }}>
-                    <input
-                      type="checkbox"
-                      id={`time-${index}`}
-                      disabled={isBooked}
-                      checked={selectedTimes.includes(timeRange)}
-                      onChange={() => handleCheckboxChange(timeRange)}
-                    />
-                    <label htmlFor={`time-${index}`} style={{ marginLeft: '5px' }}>
-                      {timeRange}
-                    </label>
-                  </div>
-                );
-              })}
-              {selectedTimes.length > 0 && (
-                <button onClick={bookSlots} style={{ marginTop: '10px' }}>
-                  ลบคิวจอง
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+                  return (
+                    <div key={index} style={{ marginRight: '5px', marginTop: '10px' }}>
+                      <input
+                        type="checkbox"
+                        id={`time-${index}`}
+                        disabled={isBooked}
+                        checked={selectedTimes.includes(timeRange)}
+                        onChange={() => handleCheckboxChange(timeRange)}
+                      />
+                      <label htmlFor={`time-${index}`} style={{ marginLeft: '3px' }}>
+                        {timeRange}
+                      </label>
+                    </div>
+                  );
+                })}
+                {selectedTimes.length > 0 && (
+                  <button onClick={bookSlots} style={{ margintop: '5px' , }}>
+                    ลบคิวจอง
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </Container>
   );
 };
 

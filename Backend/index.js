@@ -454,3 +454,34 @@ app.post("/api/forgotpassword", async (req, res) => {
   }
 }
 );
+
+// make api to get data from database
+app.get("/api/userRole", async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Authorization header missing' });
+  }
+
+  const authToken = authHeader.split(' ')[1];
+  if (!authToken) {
+    return res.status(401).json({ message: 'Token missing' });
+  }
+
+  let user;
+  try {
+    user = jwt.verify(authToken, secret);
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid token', error });
+  }
+
+
+  try {
+    const [results] = await conn.query("SELECT role FROM users WHERE email = ?", [user.email]);
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ role: results[0].role });
+  } catch (error) {
+    res.status(500).json({ message: 'Database query failed', error });
+  }
+});
