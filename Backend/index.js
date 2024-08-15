@@ -480,6 +480,7 @@ app.get("/api/userRole", async (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
+    console.log(results[0].role);
     res.json({ role: results[0].role });
   } catch (error) {
     res.status(500).json({ message: 'Database query failed', error });

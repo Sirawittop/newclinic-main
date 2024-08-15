@@ -4,12 +4,14 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import Editpassword from 'layout/MainLayout/Header/HeaderContent/Profile/Editpassword';
+import ProtectedRoute from './ProtectedRoute';
+
+
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
 const Historybooking = Loadable(lazy(() => import('pages/components-overview/Historybooking')));
 const Booking = Loadable(lazy(() => import('pages/components-overview/Booking')));
 // render - utilities
@@ -19,29 +21,27 @@ const Dashboarduser = Loadable(lazy(() => import('pages/dashboard/indexuser.js')
 
 // ==============================|| MAIN ROUTING ||============================== //
 
+
 const MainRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
     {
       path: '/',
-      element: <DashboardDefault />
+      element: <ProtectedRoute element={DashboardDefault} roles={1} /> // Admin only
+
     },
     {
       path: 'dashboard',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'sample-page',
-      element: <SamplePage />
+      element: <ProtectedRoute element={DashboardDefault} roles={1} /> // Admin only
     },
     {
       path: 'typography',
-      element: <Typography />
+      element: <ProtectedRoute element={Typography} roles={1} /> // Admin only
     },
     {
       path: 'edit_profile',
-      element: <Editprofile />
+      element: <Editprofile /> 
     },
     {
       path: 'edit_password',
@@ -49,15 +49,17 @@ const MainRoutes = {
     },
     {
       path: '/indexuser',
-      element: <Dashboarduser />
+      element: <ProtectedRoute element={Dashboarduser} roles={2} /> // Admin only
+
     },
     {
       path: '/Historybooking',
-      element: <Historybooking />
+      element: <ProtectedRoute element={Historybooking} roles={1} /> // Admin only
+
     },
     {
       path: '/Booking',
-      element: <Booking />
+      element: <ProtectedRoute element={Booking} roles={2} /> // Admin only
     }
   ]
 };
