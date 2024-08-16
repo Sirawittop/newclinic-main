@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // If you're using axios
+import axios from 'axios';
 import './historybooking.css';
-import { FileTextOutlined } from '@ant-design/icons'; // Import the icon
-import { CloseCircleOutlined } from '@ant-design/icons'; // Import the icon
+import { FileTextOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Modal } from 'antd'; // Removed unused Button import
 
 const Historybooking = () => {
   const [bookings, setBookings] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   useEffect(() => {
-    // Fetch data from the backend
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -23,7 +24,7 @@ const Historybooking = () => {
           },
         });
     
-        setBookings(response.data.data); // Assuming the data is within the `data` property
+        setBookings(response.data.data);
       } catch (error) {
         console.error('Error fetching bookings:', error);
       }
@@ -32,15 +33,26 @@ const Historybooking = () => {
     fetchBookings();
   }, []);
 
-  const handleDetailClick = (booking) => {
-    // Perform the desired action when the detail icon is clicked
-    console.log('Detail clicked for booking:', booking);
-    // For example, you can open a modal with detailed information
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`; // Reformat to Day/Month/Year
   };
 
-  const handleCancelClick = (booking) => {
-    // Handle the cancel booking action here
-    console.log('Cancel clicked for booking:', booking);
+  const formatTime = (timeString) => {
+    return `${timeString.slice(0, 5)} น.`; // Show only HH:mm and add "น."
+  };
+
+  const showModal = (booking) => {
+    setSelectedBooking(booking);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -59,22 +71,37 @@ const Historybooking = () => {
         <tbody>
           {bookings.map((booking, index) => (
             <tr key={index}>
-              <td className="cell">{booking.date}</td>
-              <td className="cell">{booking.time}</td>
+              <td className="cell">{formatDate(booking.date)}</td> {/* Format date to Day/Month/Year */}
+              <td className="cell">{formatTime(booking.time)}</td> {/* Show only HH:mm and add "น." */}
               <td className="cell">{booking.reservation_type}</td>
               <td className="cell">{booking.status}</td>
               <td className="cell">
-                <button onClick={() => handleDetailClick(booking)}>
+                <button onClick={() => showModal(booking)}>
                   <FileTextOutlined />
                 </button>
               </td>
               <td className="cell">
-                <button onClick={() => handleCancelClick(booking)}><CloseCircleOutlined /></button>
+                <button onClick={() => showModal(booking)}>
+                  <CloseCircleOutlined />
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Modal title="รายละเอียดการจอง" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        {selectedBooking && (
+          <div>
+            <p>วันที่จอง: {formatDate(selectedBooking.date)}</p> {/* Format date to Day/Month/Year */}
+            <p>เวลาจอง: {formatTime(selectedBooking.time)}</p> {/* Show only HH:mm and add "น." */}
+            <p>จองคิวรักษาอะไร: {selectedBooking.reservation_type}</p>
+            <p>สถานะดำเนินการ: {selectedBooking.status}</p>
+            <p>รายละเอียดการเข้ารับการรักษา: {selectedBooking.details}</p>
+            {/* Add more details as needed */}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
