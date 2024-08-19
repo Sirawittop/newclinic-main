@@ -119,14 +119,14 @@ app.post("/api/login", async (req, res) => {
     );
 
     if (result.length === 0) {
-      return res.status(400).send({ message: "Invalid email or password" });
+      return res.status(400).send({ message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
     }
 
     const user = result[0];
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      return res.status(400).send({ message: "Invalid email or password" });
+      return res.status(400).send({ message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
     }
 
     // สร้าง token jwt

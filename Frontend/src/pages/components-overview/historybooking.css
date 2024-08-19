@@ -1,35 +1,30 @@
 .container {
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* จัดตำแหน่งให้สูงขึ้น */
-    height: 100vh;
-    background-color: #f4f4f9;
-    margin-top: 20px; /* เพิ่มระยะห่างจากขอบด้านบน */
-}
+    margin: 20px;
+  }
   
-.table {
-    width: 80%;
+  .table {
+    width: 100%;
     border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin-top: 20px; /* เพิ่มระยะห่างจากขอบด้านบน */
-}
+  }
   
-.headerCell {
-    background-color: #6200ea;
-    color: #ffffff;
+  .headerCell {
+    background-color: #f4f4f4;
+    text-align: center;
     padding: 10px;
-    text-align: left;
-    font-weight: bold;
-    border: 1px solid #dddddd;
-}
+    border: 1px solid #ddd;
+  }
   
-.row {
-    background-color: #ffffff;
-}
-  
-.cell {
+  .cell {
+    text-align: center;
     padding: 10px;
-    text-align: left;
-    border: 1px solid #dddddd;
-}
+    border: 1px solid #ddd;
+  }
+  
+  .centered-cell {
+    text-align: center;
+  }
+  
+  .cancel-column {
+    width: 140px; /* Adjust the width as needed */
+  }
+  

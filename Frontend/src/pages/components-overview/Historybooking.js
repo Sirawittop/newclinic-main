@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './historybooking.css';
 import { FileTextOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { Modal, Button } from 'antd'; // Added Button import
+import { Modal, Button } from 'antd';
 
 const Historybooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -61,22 +61,22 @@ const Historybooking = () => {
             <th className="headerCell">จองคิวรักษาอะไร</th>
             <th className="headerCell">สถานะดำเนินการ</th>
             <th className="headerCell">รายละเอียด</th>
-            <th className="headerCell">ยกเลิกการจองคิว</th>
+            <th className="headerCell cancel-column">ยกเลิกการจองคิว</th>
           </tr>
         </thead>
         <tbody>
           {bookings.map((booking, index) => (
             <tr key={index}>
-              <td className="cell">{formatDate(booking.date)}</td> {/* Format date to Day/Month/Year */}
-              <td className="cell">{formatTime(booking.time)}</td> {/* Show only HH:mm and add "น." */}
+              <td className="cell">{formatDate(booking.date)}</td>
+              <td className="cell">{formatTime(booking.time)}</td>
               <td className="cell">{booking.reservation_type}</td>
-              <td className="cell">{booking.status}</td>
-              <td className="cell">
+              <td className="cell centered-cell cancel-column">{booking.status}</td>
+              <td className="cell centered-cell cancel-column">
                 <button onClick={() => showModal(booking)}>
                   <FileTextOutlined />
                 </button>
               </td>
-              <td className="cell">
+              <td className="cell centered-cell cancel-column">
                 <button onClick={() => showModal(booking)}>
                   <CloseCircleOutlined />
                 </button>
@@ -98,8 +98,8 @@ const Historybooking = () => {
       >
         {selectedBooking && (
           <div>
-            <p>วันที่จอง: {formatDate(selectedBooking.date)}</p> {/* Format date to Day/Month/Year */}
-            <p>เวลาจอง: {formatTime(selectedBooking.time)}</p> {/* Show only HH:mm and add "น." */}
+            <p>วันที่จอง: {formatDate(selectedBooking.date)}</p>
+            <p>เวลาจอง: {formatTime(selectedBooking.time)}</p>
             <p>จองคิวรักษาอะไร: {selectedBooking.reservation_type}</p>
             <p>สถานะดำเนินการ: {selectedBooking.status}</p>
             <p>รายละเอียดการเข้ารับการรักษา: {selectedBooking.details}</p>

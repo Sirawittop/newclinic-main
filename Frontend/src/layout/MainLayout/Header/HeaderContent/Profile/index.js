@@ -176,10 +176,10 @@ const Profile = () => {
                                 <Stack>
                                   <Typography variant="h6">{userData.users[0].name}</Typography>
                                   <Typography variant="body2" color="textSecondary">
-                                    Email : {userData.users[0].email}
+                                    อีเมล : {userData.users[0].email}
                                   </Typography>
                                   <Typography variant="body2" color="textSecondary">
-                                    Tel : {userData.users[0].numphone}
+                                    โทรศัพท์: {userData.users[0].numphone}
                                   </Typography>
                                 </Stack>
                               </Stack>
