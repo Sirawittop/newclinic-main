@@ -54,6 +54,7 @@ const AuthLogin = () => {
             if (response.status === 200) {
               localStorage.setItem('token', response.data.token);
               navigate('/dashboard', { replace: true });
+              navigate('/HomePageAdmin', { replace: true });
             }
           } catch (err) {
             if (err.response && err.response.status === 400) {

@@ -23,6 +23,14 @@ const Dashboarduser = {
       icon: EditCalendarIcon,
       breadcrumbs: false
     },
+    {
+      id: 'HomePageAdmin',
+      title: 'หน้าหลักหมอ',
+      type: 'item',
+      url: '/HomePageAdmin',
+      icon: EditCalendarIcon,
+      breadcrumbs: false
+    }
 
   ]
 };

@@ -10,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
+const HomePageAdmin = Loadable(lazy(() => import('pages/admin/HomePageAdmin')));
 // render - sample page
 const Historybooking = Loadable(lazy(() => import('pages/components-overview/Historybooking')));
 const Booking = Loadable(lazy(() => import('pages/components-overview/Booking')));
@@ -27,15 +28,15 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <ProtectedRoute element={DashboardDefault} roles={1} /> // Admin only
+      element: <ProtectedRoute element={DashboardDefault} roles={1} /> 
     },
     {
       path: 'dashboard',
-      element: <ProtectedRoute element={DashboardDefault} roles={1} /> // Admin only
+      element: <ProtectedRoute element={DashboardDefault} roles={1} />
     },
     {
       path: 'typography',
-      element: <ProtectedRoute element={Typography} roles={1} /> // Admin only
+      element: <ProtectedRoute element={Typography} roles={1} /> 
     },
     {
       path: 'edit_profile',
@@ -44,6 +45,14 @@ const MainRoutes = {
     {
       path: 'edit_password',
       element: <Editpassword />
+    },
+    {
+      path: '/',
+      element: <ProtectedRoute element={HomePageAdmin} roles={2} /> // Admin only
+    },
+    {
+      path: '/HomePageAdmin',
+      element: <ProtectedRoute element={HomePageAdmin} roles={2} /> // Admin only
     },
     {
       path: '/indexuser',

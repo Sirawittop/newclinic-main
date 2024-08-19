@@ -179,7 +179,7 @@ const Profile = () => {
                                     อีเมล : {userData.users[0].email}
                                   </Typography>
                                   <Typography variant="body2" color="textSecondary">
-                                    โทรศัพท์: {userData.users[0].numphone}
+                                     โทรศัพท์: {userData.users[0].numphone}
                                   </Typography>
                                 </Stack>
                               </Stack>
