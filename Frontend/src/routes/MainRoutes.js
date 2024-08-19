@@ -10,7 +10,6 @@ import ProtectedRoute from './ProtectedRoute';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
-const HomePageAdmin = Loadable(lazy(() => import('pages/admin/HomePageAdmin')));
 // render - sample page
 const Historybooking = Loadable(lazy(() => import('pages/components-overview/Historybooking')));
 const Booking = Loadable(lazy(() => import('pages/components-overview/Booking')));
@@ -45,9 +44,6 @@ const MainRoutes = {
     {
       path: 'edit_password',
       element: <Editpassword />
-    },
-    {path: '/',
-    element: <ProtectedRoute element={HomePageAdmin} roles={2} /> // Admin only
     },
     {
       path: '/indexuser',
