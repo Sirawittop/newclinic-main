@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './historybooking.css';
 import { FileTextOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { Modal } from 'antd'; // Removed unused Button import
+import { Modal, Button } from 'antd'; // Added Button import
 
 const Historybooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -47,10 +47,6 @@ const Historybooking = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -90,7 +86,16 @@ const Historybooking = () => {
         </tbody>
       </table>
 
-      <Modal title="รายละเอียดการจอง" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal 
+        title="รายละเอียดการจอง" 
+        open={isModalVisible} 
+        onCancel={handleCancel}
+        footer={[
+          <Button key="close" onClick={handleCancel}>
+            Close
+          </Button>,
+        ]}
+      >
         {selectedBooking && (
           <div>
             <p>วันที่จอง: {formatDate(selectedBooking.date)}</p> {/* Format date to Day/Month/Year */}
