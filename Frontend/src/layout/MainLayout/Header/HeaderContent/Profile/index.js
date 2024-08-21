@@ -111,8 +111,6 @@ const Profile = () => {
     navigate('/login');
   }
 
-  console.log('userData', userData);
-
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       {isDataloaded && (

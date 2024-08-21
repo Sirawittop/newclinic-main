@@ -72,7 +72,6 @@ const EditProfile = () => {
   };
 
   const editprofilesave = async () => {
-    console.log('editprofilesave');
     const token = localStorage.getItem('token');
     axios
       .put(

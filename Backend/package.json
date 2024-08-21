@@ -10,7 +10,9 @@
     "mongoose": "^8.2.4",
     "mysql2": "^3.9.3",
     "nodemailer": "^6.9.14",
-    "nodemon": "^3.1.4",
     "promise": "^8.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

@@ -137,6 +137,7 @@ app.post("/api/login", async (req, res) => {
     res.json({
       message: "Login successful",
       token,
+      userRole: user.role,
     });
   } catch (error) {
     console.error("Error during login:", error);

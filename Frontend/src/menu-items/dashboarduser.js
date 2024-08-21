@@ -1,6 +1,7 @@
 // assets
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import HomeOutlined from '@mui/icons-material/HomeOutlined';
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
 const Dashboarduser = {
@@ -8,6 +9,14 @@ const Dashboarduser = {
   title: 'สัตวแพทย์',
   type: 'group',
   children: [
+    {
+      id: 'HomePageAdmin',
+      title: 'หน้าหลักหมอ',
+      type: 'item',
+      url: '/HomePageAdmin',
+      icon: HomeOutlined ,
+      breadcrumbs: false
+    },
     {
       id: 'booking',
       title: 'การจอง',
@@ -22,15 +31,8 @@ const Dashboarduser = {
       url: '/indexuser',
       icon: EditCalendarIcon,
       breadcrumbs: false
-    },
-    {
-      id: 'HomePageAdmin',
-      title: 'หน้าหลักหมอ',
-      type: 'item',
-      url: '/HomePageAdmin',
-      icon: EditCalendarIcon,
-      breadcrumbs: false
     }
+
 
   ]
 };

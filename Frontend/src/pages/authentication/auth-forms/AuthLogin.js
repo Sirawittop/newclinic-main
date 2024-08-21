@@ -53,9 +53,13 @@ const AuthLogin = () => {
             // Check if the response status is OK (200)
             if (response.status === 200) {
               localStorage.setItem('token', response.data.token);
-              navigate('/dashboard', { replace: true });
 
-            }
+              if (response.data.userRole === 1) {
+                navigate('/dashboard');
+              } else if (response.data.userRole === 2) {
+                navigate('/HomePageAdmin');
+              }
+            } 
           } catch (err) {
             if (err.response && err.response.status === 400) {
               setErrors({ submit: err.response.data.message });
