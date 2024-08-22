@@ -251,7 +251,7 @@ const formatTime = (time) => {
                 <option disabled value="">
                   โปรดเลือก
                 </option>
-                <option value="ฉีดวีกซีน">ฉีดวีกซีน</option>
+                <option value="ฉีดวีกซีน">ฉีดวัคซีน</option>
                 <option value="ตรวจร่างกายทั่วไป">ตรวจร่างกายทั่วไป</option>
                 <option value="ตรวจเลือด">ตรวจเลือด/x-ray</option>
               </select>

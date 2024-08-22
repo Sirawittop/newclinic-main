@@ -18,20 +18,21 @@ const Dashboarduser = {
       breadcrumbs: false
     },
     {
-      id: 'booking',
-      title: 'การจอง',
-      type: 'item',
-      url: '/Booking',
-      icon: MeetingRoomIcon
-    },
-    {
       id: 'dashboarduser',
       title: 'จัดตารางเวลาว่าง',
       type: 'item',
       url: '/indexuser',
       icon: EditCalendarIcon,
       breadcrumbs: false
+    },
+    {
+      id: 'booking',
+      title: 'การจอง',
+      type: 'item',
+      url: '/Booking',
+      icon: MeetingRoomIcon
     }
+  
 
 
   ]

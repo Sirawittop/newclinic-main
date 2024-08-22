@@ -486,4 +486,22 @@ app.get("/api/userRole", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Database query failed', error });
   }
+
+
+  app.get("/api/queuebooking", async (req, res) => {
+    const { name, phone, email, date, time, type} = req.body;
+    try {
+      const [] = await conn.query(
+        "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type) VALUES (?, ?,  ?, ?, ? ,?)",
+        [name, phone, email, date, time, type]
+      );
+    } catch (error) {
+      console.log("error", error);
+      res.status(403).json({
+        message: "Booking failed",
+        error,
+      });
+    }
+  }
+  );
 });
