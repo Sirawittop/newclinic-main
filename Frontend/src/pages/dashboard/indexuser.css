@@ -115,10 +115,7 @@
 .modal-container button {
   margin-top: 10px;
 }
-.datepicker-day-label {
-  /* ส่วนที่คุณต้องการเปลี่ยน */
-  content: "เสาร์";
-}
+
 /* indexuser.css */
 
 /* Container for time range checkboxes */
@@ -140,4 +137,55 @@
 /* Style for checkbox label */
 .time-range-label {
   margin-left: 5px;
+}
+.datepicker-month-label {
+  /* Override default styles */
+}
+
+.datepicker-month-label[data-month="Jan"]::before {
+  content: "มกราคม";
+}
+
+.datepicker-month-label[data-month="Feb"]::before {
+  content: "กุมภาพันธ์";
+}
+
+.datepicker-month-label[data-month="Mar"]::before {
+  content: "มีนาคม";
+}
+
+.datepicker-month-label[data-month="Apr"]::before {
+  content: "เมษายน";
+}
+
+.datepicker-month-label[data-month="May"]::before {
+  content: "พฤษภาคม";
+}
+
+.datepicker-month-label[data-month="Jun"]::before {
+  content: "มิถุนายน";
+}
+
+.datepicker-month-label[data-month="Jul"]::before {
+  content: "กรกฎาคม";
+}
+
+.datepicker-month-label[data-month="Aug"]::before {
+  content: "สิงหาคม";
+}
+
+.datepicker-month-label[data-month="Sep"]::before {
+  content: "กันยายน";
+}
+
+.datepicker-month-label[data-month="Oct"]::before {
+  content: "ตุลาคม";
+}
+
+.datepicker-month-label[data-month="Nov"]::before {
+  content: "พฤศจิกายน";
+}
+
+.datepicker-month-label[data-month="Dec"]::before {
+  content: "ธันวาคม";
 }

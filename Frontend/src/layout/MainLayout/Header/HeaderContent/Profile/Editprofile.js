@@ -17,7 +17,7 @@ const EditProfile = () => {
   useEffect(() => {
     // Get token from local storage
     const token = localStorage.getItem('token');
-    
+
     // Ensure token exists before making the request
     if (token) {
       axios
@@ -113,10 +113,10 @@ const EditProfile = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        Edit Profile
+        แก้ไขโปรไฟล์
       </Typography>
       <TextField
-        label="Name"
+        label="ชื่อ"
         variant="outlined"
         margin="normal"
         fullWidth
@@ -126,10 +126,10 @@ const EditProfile = () => {
         helperText={errors.fullName}
       />
 
-      <TextField label="Email" variant="outlined" margin="normal" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
+      <TextField label="อีเมล" variant="outlined" margin="normal" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
 
       <TextField
-        label="Phone Number"
+        label="เบอร์โทรศัพท์"
         variant="outlined"
         margin="normal"
         fullWidth

@@ -29,6 +29,47 @@ const IndexUser = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const monthMap = {
+      Jan: 'มกราคม',
+      Feb: 'กุมภาพันธ์',
+      Mar: 'มีนาคม',
+      Apl: 'เมษายน',
+      May: 'พฤษภาคม',
+      June: 'มิถุนายน',
+      July: 'กรกฎาคม',
+      Aug: 'สิงหาคม',
+      Sep: 'กันยายน',
+      Oct: 'ตุลาคม',
+      Nov: 'พฤศจิกายน',
+      Dec: 'ธันวาคม'
+    };
+
+    // Function to translate month names
+    const translateMonthNames = () => {
+      document.querySelectorAll('.datepicker-month-label').forEach(element => {
+        const englishMonth = element.textContent.trim();
+        if (monthMap[englishMonth]) {
+          element.textContent = monthMap[englishMonth];
+        }
+      });
+    };
+
+    // Create a MutationObserver to watch for changes in the DOM
+    const observer = new MutationObserver(() => {
+      translateMonthNames();
+    });
+
+    // Start observing the body for changes
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Initial translation after component mounts
+    translateMonthNames();
+
+    // Cleanup observer on component unmount
+    return () => observer.disconnect();
+  }, []);
+
   const handleSelectedDay = (date) => {
     setSelectedDate(date);
     setSelectedTimes([]); // Clear selected times when a new date is selected

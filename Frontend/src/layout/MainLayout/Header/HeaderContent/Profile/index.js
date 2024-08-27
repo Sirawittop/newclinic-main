@@ -36,8 +36,6 @@ function TabPanel({ children, value, index, ...other }) {
   );
 }
 
-
-
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -76,12 +74,10 @@ const Profile = () => {
 
   const isDataloaded = userData.length !== 0;
 
-
   const handleLogout = async () => {
     // logout
     localStorage.removeItem('token');
     navigate('/login');
-
   };
 
   const anchorRef = useRef(null);
@@ -120,6 +116,7 @@ const Profile = () => {
               p: 0.25,
               bgcolor: open ? iconBackColorOpen : 'transparent',
               borderRadius: 1,
+              border: '2px solid black', // Added black border
               '&:hover': { bgcolor: 'secondary.lighter' }
             }}
             aria-label="open profile"
@@ -133,6 +130,7 @@ const Profile = () => {
               <Typography variant="subtitle1">{userData.users[0].name}</Typography>
             </Stack>
           </ButtonBase>
+
           <Popper
             placement="bottom-end"
             open={open}
@@ -177,7 +175,7 @@ const Profile = () => {
                                     อีเมล : {userData.users[0].email}
                                   </Typography>
                                   <Typography variant="body2" color="textSecondary">
-                                     โทรศัพท์: {userData.users[0].numphone}
+                                    โทรศัพท์: {userData.users[0].numphone}
                                   </Typography>
                                 </Stack>
                               </Stack>

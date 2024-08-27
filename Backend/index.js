@@ -313,11 +313,11 @@ app.put("/api/editpassword", async (req, res) => {
 });
 // post api for booking time
 app.post("/api/booking", async (req, res) => {
-  const { name, phone, email, date, time, type} = req.body;
+  const { name, phone, email, date, time, type } = req.body;
   try {
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type) VALUES (?, ?,  ?, ?, ? ,?)",
-      [name, phone, email, date, time, type]
+      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type,status) VALUES (?, ?,  ?, ?, ? ,?,?)",
+      [name, phone, email, date, time, type, 1]
     );
 
     // Send confirmation email
@@ -393,7 +393,7 @@ app.get('/api/historybooking', async (req, res) => {
     }
 
     const [results] = await conn.query(
-      `SELECT DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type 
+      `SELECT DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type ,status
        FROM reservationqueue 
        WHERE email = ?`,
       [user.email]
@@ -436,8 +436,8 @@ app.post("/api/forgotpassword", async (req, res) => {
 คุณสามารถกดลิงค์ด้านล่างเพื่อรีเซ็ตรหัสผ่านของคุณ
 
 🔗 http://localhost:3000/resetpassword/${results[0].email
-      .split("@")
-      .join("%40")}
+        .split("@")
+        .join("%40")}
 }
 `;
     sendEmail(email, subject, text);
@@ -489,7 +489,7 @@ app.get("/api/userRole", async (req, res) => {
 
 
   app.get("/api/queuebooking", async (req, res) => {
-    const { name, phone, email, date, time, type} = req.body;
+    const { name, phone, email, date, time, type } = req.body;
     try {
       const [] = await conn.query(
         "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type) VALUES (?, ?,  ?, ?, ? ,?)",
@@ -505,3 +505,50 @@ app.get("/api/userRole", async (req, res) => {
   }
   );
 });
+
+
+app.post("/api/sentmail", async (req, res) => {
+  const { name, email, date, time } = req.body;
+  try {
+    // Insert booking details into the database
+    const [results] = await conn.query(
+      "INSERT INTO reservationqueue (name, email, dataday, time) VALUES (?, ?, ?, ?)",
+      [name, email, date, time]
+    );
+
+    // Prepare email content
+    const subject = "แจ้งเตือนการจองคิว";
+    const text = `🏥แจ้งเตือนการจองคิว🏥
+        สวัสดีคุณ ${name} 👋
+
+เรายินดีที่จะแจ้งให้ทราบว่าคุณได้จองคิวกับทางคลินิกไว้
+
+รายละเอียด
+
+📅 วันที่: ${formatDate(date)}
+🕒 เวลา: ${time}
+
+⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
+
+หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
+`;
+
+    // Send confirmation email
+    await sendEmail(email, subject, text);
+
+    // Respond with success message
+    res.json({
+      message: "Booking successful and confirmation email sent",
+    });
+  } catch (error) {
+    // Handle errors and respond with error message
+    console.log("error", error);
+    res.status(403).json({
+      message: "Booking failed",
+      error,
+    });
+  }
+});
+
+
+

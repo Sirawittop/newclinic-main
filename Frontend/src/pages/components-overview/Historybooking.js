@@ -13,23 +13,23 @@ const Historybooking = () => {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem('token');
-        
+
         if (!token) {
           throw new Error('No token found in local storage');
         }
-    
+
         const response = await axios.get('http://localhost:8000/api/historybooking', {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
-    
+
         setBookings(response.data.data);
       } catch (error) {
         console.error('Error fetching bookings:', error);
       }
     };
-    
+
     fetchBookings();
   }, []);
 
@@ -51,6 +51,39 @@ const Historybooking = () => {
     setIsModalVisible(false);
   };
 
+  const confirmCancelBooking = (booking) => {
+    Modal.confirm({
+      title: 'ยกเลิกการจอง',
+      content: 'คุณแน่ใจหรือว่าต้องการยกเลิกการจองนี้?',
+      okText: 'ใช่, ยกเลิก',
+      cancelText: 'ไม่',
+      centered: true,  // ทำให้ Modal เด้งขึ้นกลางจอ
+      onOk: async () => {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.delete(`http://localhost:8000/api/cancelbooking/${booking.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setBookings(bookings.filter(b => b.id !== booking.id));
+        } catch (error) {
+          console.error('Error cancelling booking:', error);
+        }
+      },
+    });
+  };
+
+  const formatstatus = (status) => {
+    if (status === 1) {
+      return 'กำลังดำเนินการ';
+    } else if (status === 2) {
+      return 'เสร็จสิ้น';
+    } else if (status === 3) {
+      return 'ยกเลิก';
+    }
+  }
+
   return (
     <div className="container">
       <table className="table">
@@ -70,15 +103,15 @@ const Historybooking = () => {
               <td className="cell">{formatDate(booking.date)}</td>
               <td className="cell">{formatTime(booking.time)}</td>
               <td className="cell">{booking.reservation_type}</td>
-              <td className="cell centered-cell cancel-column">{booking.status}</td>
-              <td className="cell centered-cell cancel-column">
+              <td className="cell centered-cell">{formatstatus(booking.status)}</td>
+              <td className="cell centered-cell">
                 <button onClick={() => showModal(booking)}>
                   <FileTextOutlined />
                 </button>
               </td>
               <td className="cell centered-cell cancel-column">
-                <button onClick={() => showModal(booking)}>
-                  <CloseCircleOutlined />
+                <button onClick={() => confirmCancelBooking(booking)}>
+                  <CloseCircleOutlined style={{ color: 'red' }} />
                 </button>
               </td>
             </tr>
@@ -86,15 +119,16 @@ const Historybooking = () => {
         </tbody>
       </table>
 
-      <Modal 
-        title="รายละเอียดการจอง" 
-        open={isModalVisible} 
+      <Modal
+        title="รายละเอียดการจอง"
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <Button key="close" onClick={handleCancel}>
             Close
-          </Button>,
+          </Button>
         ]}
+        centered  // ทำให้ Modal เด้งขึ้นกลางจอ
       >
         {selectedBooking && (
           <div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
-import { Container, Typography, TextField, Button, Snackbar, CircularProgress, Alert } from '@mui/material';
+import { Container, Typography, TextField, Button, Snackbar, CircularProgress, Alert, Link } from '@mui/material';
 
 const AuthForgotpass = () => {
   const [email, setEmail] = useState('');
@@ -35,15 +35,15 @@ const AuthForgotpass = () => {
   return (
     <Container maxWidth="sm" style={{ marginTop: '50px' }}>
       <Typography variant="h4" gutterBottom align="center">
-        Forgot Password
+        รีเซ็ตรหัสผ่าน
       </Typography>
       <TextField
-        label="Email Address"
+        label="ใส่อีเมลของคุณ"
         variant="outlined"
         fullWidth
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        style={{ marginBottom: '20px' }}
+        style={{ marginBottom: '30px' }}
       />
       <Button
         variant="contained"
@@ -53,17 +53,21 @@ const AuthForgotpass = () => {
         disabled={!email || loading}
         style={{ marginBottom: '20px' }}
       >
-        {loading ? <CircularProgress size={24} color="inherit" /> : 'Reset Password'}
+        {loading ? <CircularProgress size={24} color="inherit" /> : 'ส่งอีเมล'}
       </Button>
       <Snackbar open={!!message || !!error} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={error ? 'error' : 'success'}>
           {error || message}
         </Alert>
       </Snackbar>
-      <Container maxWidth="sm" style={{ marginTop: '50px', display: 'flex', justifyContent: 'center' }}>
-        <Button component={RouterLink} to="/Login" variant="contained" color="primary" style={{ fontSize: 15 }}>
-          Login
-        </Button>
+      <Container maxWidth="sm" style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end' }}>
+        <Link
+          component={RouterLink}
+          to="/Login"
+          style={{ fontSize: 15, textDecoration: 'none', color: '#1976d2' }}
+        >
+          กลับหน้าล็อคอิน
+        </Link>
       </Container>
     </Container>
   );
