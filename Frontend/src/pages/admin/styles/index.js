@@ -48,8 +48,8 @@ export const ArrowButton = styled.button`
   cursor: pointer;
   transition: 0.3s;
   &:hover {
-    background: black;
-    color: white;
+    background: red;
+    color: blue;
   }
 `;
 
