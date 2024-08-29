@@ -28,7 +28,7 @@ const AuthLogin = () => {
   };
 
   const navigate = useNavigate();
-  
+
 
 
   return (
@@ -59,7 +59,7 @@ const AuthLogin = () => {
               } else if (response.data.userRole === 2) {
                 navigate('/HomePageAdmin');
               }
-            } 
+            }
           } catch (err) {
             if (err.response && err.response.status === 400) {
               setErrors({ submit: err.response.data.message });
@@ -133,7 +133,7 @@ const AuthLogin = () => {
               <Grid item xs={12} sx={{ mt: -1 }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
                   <Link variant="h6" component={RouterLink} to="/Forgotpass" color="#1677ff">
-                    ลืมรหัสผ่านใช่หรือไม่
+                    ลืมรหัสผ่านใช่หรือไม่?
                   </Link>
                 </Stack>
               </Grid>

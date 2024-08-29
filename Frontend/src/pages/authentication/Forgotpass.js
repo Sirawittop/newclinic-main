@@ -33,7 +33,7 @@ const AuthForgotpass = () => {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: '50px' }}>
+    <Container maxWidth="sm" style={{ marginTop: '80px' }}>
       <Typography variant="h4" gutterBottom align="center">
         รีเซ็ตรหัสผ่าน
       </Typography>
@@ -44,6 +44,9 @@ const AuthForgotpass = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         style={{ marginBottom: '30px' }}
+        InputLabelProps={{
+          style: { fontSize: 12 }, // Reduced font size for the label
+        }}
       />
       <Button
         variant="contained"
@@ -51,7 +54,13 @@ const AuthForgotpass = () => {
         fullWidth
         onClick={handleResetPassword}
         disabled={!email || loading}
-        style={{ marginBottom: '20px' }}
+        style={{
+          marginBottom: '20px',
+          padding: '14px 0',    // Increased padding for more space
+          fontSize: '14px',     // Reduced font size
+          lineHeight: '1.5',    // Ensures proper line height
+          minHeight: '48px',    // Set a minimum height for the button
+        }}
       >
         {loading ? <CircularProgress size={24} color="inherit" /> : 'ส่งอีเมล'}
       </Button>
@@ -60,11 +69,11 @@ const AuthForgotpass = () => {
           {error || message}
         </Alert>
       </Snackbar>
-      <Container maxWidth="sm" style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end' }}>
+      <Container maxWidth="sm" style={{ marginTop: '10px', display: 'flex', justifyContent: 'flex-end' }}>
         <Link
           component={RouterLink}
           to="/Login"
-          style={{ fontSize: 15, textDecoration: 'none', color: '#1976d2' }}
+          style={{ fontSize: 15, textDecoration: 'auto', color: '#1976d2' }}
         >
           กลับหน้าล็อคอิน
         </Link>

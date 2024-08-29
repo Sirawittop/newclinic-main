@@ -1,154 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import 'moment/locale/th';
-import { EventCalendar } from 'react-mui-event-calendar';
-import './HomePageAdmin.css';
+import React, { useEffect, useState } from "react";
+import {
+  Calendar,
+  Year,
+  Month,
+  DatesStripe,
+  ArrowButton,
+  ActiveDate,
+  Bottom,
+  Middle,
+  CalendarIcon,
+  BackButtonContainer,
+  Top,
+  ReactCalendarContainer,
+  CalendarIconContainer,
+  BackButton
+} from "./styles";
+import {
+  getCurrentWeek,
+  getNextWeek,
+  getPreviousWeek,
+  getWeek
+} from "./helpers/week";
+import {
+  getCurrentMonth,
+  getCurrentYear,
+  parseActiveDate
+} from "./helpers/date";
+import { showBackButton } from "./helpers/button";
+import Week from "./components/week";
+import ReactCalendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { BsFillCalendarWeekFill } from "react-icons/bs";
 
-const BookingModal = ({ booking, setFormVisible, setFormText, formText, handleFormSubmit, isFormVisible }) => {
-  // Log for debugging
-  useEffect(() => {
-    console.log('formText in BookingModal:', formText);
-  }, [formText]);
-
-  const handleChange = (event) => {
-    console.log(event.target.value);
-    setFormText(event.target.value);
-  };
-
-
-
-
-
-
-
-  return (
-    <div>
-      <div className="table">
-        <div className="header">ชื่อผู้จอง</div>
-        <div className="content">{booking.name}</div>
-        <div className="header">เบอร์โทรศัพท์</div>
-        <div className="content">{booking.phone}</div>
-        <div className="header">วันที่จอง</div>
-        <div className="content">{booking.date}</div>
-        <div className="header">เวลาจอง</div>
-        <div className="content">{booking.time}</div>
-        <div className="header">ประเภทการจอง</div>
-        <div className="content">{booking.serviceType}</div>
-        <div className="header">สถานะ</div>
-        <div className="content">{booking.status}</div>
-        <div className="header">หมายเหตุ</div>
-        <textarea
-          value={formText}
-          onChange={handleChange}
-          placeholder="ใส่หมายเหตุที่นี่..." // This is Thai for "Enter a note here..."
-        />
-      </div>
-
-      {isFormVisible && (
-        <div className="form-modal">
-          <textarea
-            value={formText}
-            onChange={(e) => {
-              console.log('Form modal onChange:', e.target.value); // Log onChange value
-              setFormText(e.target.value);
-            }}
-            placeholder="Enter your notes here..."
-          />
-          <button onClick={handleFormSubmit}>Submit</button>
-          <button onClick={() => setFormVisible(false)}>Cancel</button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-function App() {
-  const [isFormVisible, setFormVisible] = useState(false);
-  const [formText, setFormText] = useState('');
-  const [dataSource, setDataSource] = useState([
-    {
-      date: new Date(),
-      title: 'คิวจอง',
-      popupContent: (
-        <BookingModal
-          booking={{
-            date: new Date().toLocaleDateString(),
-            time: new Date().toLocaleTimeString(),
-            serviceType: 'บริการตัวอย่าง',
-            status: 'กำลังดำเนินการ',
-            name: 'John Doe',
-            phone: '123456789'
-          }}
-          setFormVisible={setFormVisible}
-          setFormText={setFormText}
-          formText={formText}
-          handleFormSubmit={() => {
-            console.log('Form submitted:', formText);
-            setFormVisible(false);
-          }}
-          isFormVisible={isFormVisible}
-        />
-      ),
-      id: '1'
-    }
-    // ...other data entries
-  ]);
-  const [openModals, setOpenModals] = useState({});
+export default function App() {
+  const [weekData, setWeekData] = useState([]);
+  const [currentDate, setCurrentDate] = useState();
+  const [showCalendar, setShowCalendar] = useState(false);
 
   useEffect(() => {
-    document
-      .querySelectorAll('.MuiTypography-root.MuiTypography-caption.MuiTypography-gutterBottom.css-1x4sxjj-MuiTypography-root')
-      .forEach((el) => {
-        if (el.innerText === 'FRI.') {
-          el.innerText = 'ศุกร์';
-        }
-      });
+    let d = new Date();
+    setCurrentDate(d);
+    setWeekData(getCurrentWeek());
   }, []);
 
-  const handleOpen = (id) => {
-    setOpenModals((prev) => ({ ...prev, [id]: true }));
+  const weekHandler = (e) => {
+    setCurrentDate(undefined);
+    setShowCalendar(false);
+    if (e.currentTarget.value === "previous") {
+      setWeekData(getPreviousWeek(weekData[0]));
+    } else {
+      setWeekData(getNextWeek(weekData[weekData.length - 1]));
+    }
   };
 
-  const handleClose = (id) => {
-    setOpenModals((prev) => ({ ...prev, [id]: false }));
+  const handleClick = () => {
+    let now = new Date();
+    setCurrentDate(now);
+    setWeekData(getCurrentWeek());
+    setShowCalendar(false);
+  };
+
+  const handleDateChange = (dateValue) => {
+    setCurrentDate(dateValue);
+    setWeekData(getWeek(dateValue));
+  };
+
+  const handleShowCalendar = () => {
+    setShowCalendar(!showCalendar);
   };
 
   return (
-    <div
-      style={{
-        width: '100%',
-        minHeight: '70vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        margin: 'auto'
-      }}
-    >
-      <EventCalendar
-        dataSource={dataSource}
-        pallet={{ primary: '#d2140a', secondary: '#dc4a41' }}
-        onDataChange={(newEvents) => setDataSource(newEvents)}
-        onEventClick={(event) => handleOpen(event.id)}
-        locale="th"
-        weekStartsOn={0}
-        dayNames={['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.']}
-      />
+    <div style={{ width: "1150px" }}>
+      <Calendar style={{ width: "100%" }}>
+        <Top>
+          <Year>{getCurrentYear(weekData)}</Year>
+          <Month>{getCurrentMonth(weekData)}</Month>
+          <DatesStripe>
+            <ArrowButton value="previous" onClick={weekHandler}>
+              ⧏
+            </ArrowButton>
+            <Week
+              weekData={weekData}
+              setCurrentDate={setCurrentDate}
+              currentDate={currentDate}
+            />
+            <ArrowButton value="next" onClick={weekHandler}>
+              ⧐
+            </ArrowButton>
+          </DatesStripe>
+        </Top>
+        <Middle>
+          <BackButtonContainer style={{ justifyContent: "flex-start" }}>
+            {!showBackButton(weekData)?.isCurrentWeek &&
+              showBackButton(weekData)?.left ? (
+              <BackButton style={{ padding: '15px 30px', fontSize: '20px' }} onClick={handleClick}>
+                {"<< back to today"}
+              </BackButton>
+            ) : null}
+          </BackButtonContainer>
+          {currentDate && (
+            <ActiveDate style={{
+              fontSize: '20px',
+              padding: '35px',
+              textAlign: 'center',  // Center text horizontally
+              display: 'flex',       // Use flexbox for vertical centering
+              alignItems: 'center',  // Center text vertically
+              justifyContent: 'center', // Center text horizontally
+              borderRadius: '10px', // Optional: to match the rounded button look
+              backgroundColor: '#blue' // Optional: background color for visibility
+            }}>
+              {parseActiveDate(currentDate)}
+            </ActiveDate>
 
-      {dataSource.map((event) => (
-        <Dialog
-          key={event.id}
-          open={!!openModals[event.id]}
-          onClose={() => handleClose(event.id)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'Event Details'}</DialogTitle>
-          <DialogContent>{event.popupContent}</DialogContent>
-          <DialogActions></DialogActions>
-        </Dialog>
-      ))}
+          )}
+          <BackButtonContainer style={{ justifyContent: "flex-end" }}>
+            {!showBackButton(weekData)?.isCurrentWeek &&
+              showBackButton(weekData)?.right ? (
+              <BackButton style={{ padding: '15px 30px', fontSize: '20px' }} onClick={handleClick}>
+                {"back to today >>"}
+              </BackButton>
+            ) : null}
+          </BackButtonContainer>
+        </Middle>
+        <Bottom>
+          <ReactCalendarContainer>
+            {showCalendar && (
+              <ReactCalendar
+                onChange={handleDateChange}
+                value={currentDate}
+                calendarType="US"
+              />
+            )}
+          </ReactCalendarContainer>
+          <CalendarIconContainer>
+            <CalendarIcon onClick={handleShowCalendar}>
+              <BsFillCalendarWeekFill size={60} style={{ color: "black" }} />
+            </CalendarIcon>
+          </CalendarIconContainer>
+        </Bottom>
+      </Calendar>
     </div>
   );
 }
-
-export default App;

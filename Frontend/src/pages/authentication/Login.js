@@ -19,7 +19,7 @@ const Login = () => (
         <Stack direction="row" justifyContent="center" alignItems="center" sx={{ mb: 2 }}>
           <img src={logo} alt="Logo" style={{ height: 160 }} />
         </Stack>
-        <h4 style={{ textAlign: 'center' }}>แอปพลิเคชันจองคิวรักษาสัตว์คลินิคแสนสุขรักษาสัตว์</h4>
+        <h4 style={{ textAlign: 'center' }}>จองคิวรักษาสัตว์คลินิคแสนสุขรักษาสัตว์</h4>
       </Grid>
       <Grid item xs={12}>
         <Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
