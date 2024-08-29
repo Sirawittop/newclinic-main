@@ -507,48 +507,67 @@ app.get("/api/userRole", async (req, res) => {
 });
 
 
-app.post("/api/sentmail", async (req, res) => {
-  const { name, email, date, time } = req.body;
+// app.post("/api/sentmail", async (req, res) => {
+//   const { name, email, date, time } = req.body;
+//   try {
+//     // Insert booking details into the database
+//     const [results] = await conn.query(
+//       "INSERT INTO reservationqueue (name, email, dataday, time) VALUES (?, ?, ?, ?)",
+//       [name, email, date, time]
+//     );
+
+//     // Prepare email content
+//     const subject = "แจ้งเตือนการจองคิว";
+//     const text = `🏥แจ้งเตือนการจองคิว🏥
+//         สวัสดีคุณ ${name} 👋
+
+// เรายินดีที่จะแจ้งให้ทราบว่าคุณได้จองคิวกับทางคลินิกไว้
+
+// รายละเอียด
+
+// 📅 วันที่: ${formatDate(date)}
+// 🕒 เวลา: ${time}
+
+// ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
+
+// หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
+// `;
+
+//     // Send confirmation email
+//     await sendEmail(email, subject, text);
+
+//     // Respond with success message
+//     res.json({
+//       message: "Booking successful and confirmation email sent",
+//     });
+//   } catch (error) {
+//     // Handle errors and respond with error message
+//     console.log("error", error);
+//     res.status(403).json({
+//       message: "Booking failed",
+//       error,
+//     });
+//   }
+// });
+
+
+
+app.get('/api/queuedoctor', async (req, res) => {
   try {
-    // Insert booking details into the database
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, email, dataday, time) VALUES (?, ?, ?, ?)",
-      [name, email, date, time]
+      "SELECT * FROM reservationqueue"
     );
-
-    // Prepare email content
-    const subject = "แจ้งเตือนการจองคิว";
-    const text = `🏥แจ้งเตือนการจองคิว🏥
-        สวัสดีคุณ ${name} 👋
-
-เรายินดีที่จะแจ้งให้ทราบว่าคุณได้จองคิวกับทางคลินิกไว้
-
-รายละเอียด
-
-📅 วันที่: ${formatDate(date)}
-🕒 เวลา: ${time}
-
-⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
-
-หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
-`;
-
-    // Send confirmation email
-    await sendEmail(email, subject, text);
-
-    // Respond with success message
     res.json({
-      message: "Booking successful and confirmation email sent",
+      message: "search queue booking success",
+      data: results,
     });
   } catch (error) {
-    // Handle errors and respond with error message
     console.log("error", error);
     res.status(403).json({
-      message: "Booking failed",
+      message: "search queue booking failed",
       error,
     });
   }
-});
+}
 
-
-
+);

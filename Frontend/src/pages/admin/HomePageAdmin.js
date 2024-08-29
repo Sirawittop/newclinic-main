@@ -15,6 +15,12 @@ const BookingModal = ({ booking, setFormVisible, setFormText, formText, handleFo
     setFormText(event.target.value);
   };
 
+
+
+
+
+
+
   return (
     <div>
       <div className="table">
@@ -26,9 +32,9 @@ const BookingModal = ({ booking, setFormVisible, setFormText, formText, handleFo
         <div className="content">{booking.date}</div>
         <div className="header">เวลาจอง</div>
         <div className="content">{booking.time}</div>
-        <div className="header">จองคิวรักษาอะไร</div>
+        <div className="header">ประเภทการจอง</div>
         <div className="content">{booking.serviceType}</div>
-        <div className="header">สถานะดำเนินการ</div>
+        <div className="header">สถานะ</div>
         <div className="content">{booking.status}</div>
         <div className="header">หมายเหตุ</div>
         <textarea

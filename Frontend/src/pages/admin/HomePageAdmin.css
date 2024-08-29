@@ -1,59 +1,60 @@
 .admin-container {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  
-  .admin-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .admin-main {
-    margin-top: 20px;
-  }
-  
-  .admin-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-  }
-  
-  .stats-card {
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    text-align: center;
-    width: 30%;
-  }
-  
-  .admin-actions {
-    text-align: center;
-  }
-  
-  .admin-button {
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 10px;
-    padding: 10px 20px;
-  }
-  
-  .admin-button:hover {
-    background-color: #45a049;
-  }
-  
-  .admin-footer {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 14px;
-    color: #555;
-  }
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.admin-header {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.admin-main {
+  margin-top: 20px;
+}
+
+.admin-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  width: 30%;
+}
+
+.admin-actions {
+  text-align: center;
+}
+
+.admin-button {
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px;
+  padding: 10px 20px;
+}
+
+.admin-button:hover {
+  background-color: #45a049;
+}
+
+.admin-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
 /* Monday */
 .MuiTypography-root.MuiTypography-caption.MuiTypography-gutterBottom.css-h8rj0v-MuiTypography-root[aria-label="MON."] {
   font-size: 0;
@@ -151,9 +152,11 @@
 .MuiTypography-root.MuiTypography-caption.MuiTypography-gutterBottom.css-h8rj0v-MuiTypography-root[aria-label="Sunday"] span {
   display: none;
 }
+
 .MuiTypography-root.MuiTypography-h6.css-6b3s0t-MuiTypography-root {
   content: 'คิวจอง' !important;
 }
+
 /* Add this to your CSS file */
 
 .table {
