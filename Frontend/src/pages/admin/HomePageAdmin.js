@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Calendar,
-  Year,
-  Month,
-  DatesStripe,
-  ArrowButton,
-  ActiveDate,
-  Bottom,
-  Middle,
-  CalendarIcon,
-  BackButtonContainer,
-  Top,
-  ReactCalendarContainer,
-  CalendarIconContainer,
-  BackButton
-} from "./styles";
+import axios from "axios";
+import Week from "./components/week";
+import ReactCalendar from "react-calendar"; // Import ReactCalendar
+import "react-calendar/dist/Calendar.css"; // Import the calendar's CSS for styling
 import {
   getCurrentWeek,
   getNextWeek,
@@ -24,18 +12,28 @@ import {
 import {
   getCurrentMonth,
   getCurrentYear,
-  parseActiveDate
 } from "./helpers/date";
 import { showBackButton } from "./helpers/button";
-import Week from "./components/week";
-import ReactCalendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import { BsFillCalendarWeekFill } from "react-icons/bs";
+import {
+  Calendar,
+  Year,
+  Month,
+  DatesStripe,
+  ArrowButton,
+  Bottom,
+  Middle,
+  BackButtonContainer,
+  Top,
+  ReactCalendarContainer,
+  CalendarIconContainer,
+  BackButton
+} from "./styles";
 
-export default function App() {
+export default function HomePageAdmin() {
   const [weekData, setWeekData] = useState([]);
   const [currentDate, setCurrentDate] = useState();
   const [showCalendar, setShowCalendar] = useState(false);
+  const [reservationData, setReservationData] = useState(null)
 
   useEffect(() => {
     let d = new Date();
@@ -65,8 +63,54 @@ export default function App() {
     setWeekData(getWeek(dateValue));
   };
 
-  const handleShowCalendar = () => {
-    setShowCalendar(!showCalendar);
+  // Axios request function to fetch data based on the selected date
+  const fetchData = (date) => {
+    // Convert the date to YYYY-MM-DD format
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0'); // Days are 1-based
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    console.log("Formatted Date:", formattedDate);
+
+    axios.get(`http://localhost:8000/api/queuedoctor?targetDate=${formattedDate}`)
+      .then(response => {
+        // Handle the response data here
+        console.log("Data fetched:", response.data.data);
+        setReservationData(response.data.data)
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+
+    setCurrentDate(date);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return '';
+
+    try {
+      // Convert the input date to a JavaScript Date object
+      const jsDate = new Date(date);
+
+      // Extract the day, month, and year parts
+      const formatday = jsDate.getDate().toString().padStart(2, '0');
+      const formatonth = (jsDate.getMonth() + 1).toString().padStart(2, '0'); // getMonth() is zero-based
+      const formatyear = (jsDate.getFullYear() + 543).toString(); // Convert Gregorian year to Buddhist year
+
+      // Format as "dd/mm/yyyy"
+      return `${formatday}/${formatonth}/${formatyear}`;
+    } catch (error) {
+      console.error('Invalid date format', error);
+      return 'ไม่พบข้อมูล';
+    }
+  };
+
+
+  const formatTime = (date) => {
+    if (!date) return '';
+    return date.split('T')[1].split('.')[0];
   };
 
   return (
@@ -81,7 +125,7 @@ export default function App() {
             </ArrowButton>
             <Week
               weekData={weekData}
-              setCurrentDate={setCurrentDate}
+              setCurrentDate={fetchData} // Pass Axios fetch function to Week component
               currentDate={currentDate}
             />
             <ArrowButton value="next" onClick={weekHandler}>
@@ -99,19 +143,89 @@ export default function App() {
             ) : null}
           </BackButtonContainer>
           {currentDate && (
-            <ActiveDate style={{
-              fontSize: '20px',
-              padding: '35px',
-              textAlign: 'center',  // Center text horizontally
-              display: 'flex',       // Use flexbox for vertical centering
-              alignItems: 'center',  // Center text vertically
-              justifyContent: 'center', // Center text horizontally
-              borderRadius: '10px', // Optional: to match the rounded button look
-              backgroundColor: '#blue' // Optional: background color for visibility
-            }}>
-              {parseActiveDate(currentDate)}
-            </ActiveDate>
+            <div style={{ padding: '35px', textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                borderRadius: '10px',
+                backgroundColor: '#f5f5f5' // Optional: background color for visibility
+              }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>วันที่</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>เวลา</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ชื่อผู้จอง</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>เบอร์โทร</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>ประเภทการจอง</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>สถานะดำเนินการ</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>หมายเหตุ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reservationData
+                    ? reservationData.map((reservation, index) => (
+                      <tr key={index}>
+                        <td style={{ padding: '0 10px', fontSize: '14px', color: '#575757' }}>
+                          {formatDate(reservation.dataday)}
 
+                        </td>
+                        <td
+                          style={{
+                            padding: '0 10px',
+                            fontSize: '14px',
+                            color: '#575757',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {formatTime(reservation.dataday)}
+                        </td>
+                        <td
+                          style={{
+                            padding: '0 10px',
+                            fontSize: '14px',
+                            color: '#575757',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {reservation.name}
+                        </td>
+                        <td
+                          style={{
+                            padding: '0 10px',
+                            fontSize: '14px',
+                            color: '#575757',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {reservation.numphone}
+                        </td>
+                        <td
+                          style={{
+                            padding: '0 10px',
+                            fontSize: '14px',
+                            color: '#575757',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {reservation.reservation_type}
+                        </td>
+                        <td
+                          style={{
+                            padding: '0 10px',
+                            fontSize: '14px',
+                            color: '#575757',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {reservation.status}
+                        </td>
+
+                      </tr>
+                    ))
+                    : null}
+                </tbody>
+              </table>
+            </div>
           )}
           <BackButtonContainer style={{ justifyContent: "flex-end" }}>
             {!showBackButton(weekData)?.isCurrentWeek &&
@@ -133,9 +247,7 @@ export default function App() {
             )}
           </ReactCalendarContainer>
           <CalendarIconContainer>
-            <CalendarIcon onClick={handleShowCalendar}>
-              <BsFillCalendarWeekFill size={60} style={{ color: "black" }} />
-            </CalendarIcon>
+            {/* Additional icons or actions can be added here */}
           </CalendarIconContainer>
         </Bottom>
       </Calendar>

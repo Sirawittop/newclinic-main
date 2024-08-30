@@ -553,21 +553,37 @@ app.get("/api/userRole", async (req, res) => {
 
 
 app.get('/api/queuedoctor', async (req, res) => {
+  const { targetDate } = req.query; // Extract targetDate from query parameters
+
+  if (!targetDate) {
+    return res.status(400).json({
+      message: "Target date is required",
+    });
+  }
+
+  // Optional: Validate the date format if needed
+  // For example, using a regex to check the format YYYY-MM-DD
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  if (!datePattern.test(targetDate)) {
+    return res.status(400).json({
+      message: "Invalid date format. Expected format is YYYY-MM-DD",
+    });
+  }
+
   try {
     const [results] = await conn.query(
-      "SELECT * FROM reservationqueue"
+      "SELECT * FROM reservationqueue WHERE DATE(dataday) = ?",
+      [targetDate]
     );
     res.json({
-      message: "search queue booking success",
+      message: "Search queue booking success",
       data: results,
     });
   } catch (error) {
-    console.log("error", error);
+    console.log("Error:", error);
     res.status(403).json({
-      message: "search queue booking failed",
+      message: "Search queue booking failed",
       error,
     });
   }
-}
-
-);
+});
