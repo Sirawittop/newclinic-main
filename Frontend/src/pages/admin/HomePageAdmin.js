@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Week from "./components/week";
-import ReactCalendar from "react-calendar"; // Import ReactCalendar
-import "react-calendar/dist/Calendar.css"; // Import the calendar's CSS for styling
+import ReactCalendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import {
   getCurrentWeek,
   getNextWeek,
@@ -33,7 +33,7 @@ export default function HomePageAdmin() {
   const [weekData, setWeekData] = useState([]);
   const [currentDate, setCurrentDate] = useState();
   const [showCalendar, setShowCalendar] = useState(false);
-  const [reservationData, setReservationData] = useState(null)
+  const [reservationData, setReservationData] = useState(null);
 
   useEffect(() => {
     let d = new Date();
@@ -63,12 +63,21 @@ export default function HomePageAdmin() {
     setWeekData(getWeek(dateValue));
   };
 
+  const formatstatus = (status) => {
+    if (status === 1) {
+      return 'กำลังดำเนินการ';
+    } else if (status === 2) {
+      return 'เสร็จสิ้น';
+    } else if (status === 3) {
+      return 'ยกเลิก';
+    }
+  };
+
   // Axios request function to fetch data based on the selected date
   const fetchData = (date) => {
-    // Convert the date to YYYY-MM-DD format
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(date.getDate()).padStart(2, '0'); // Days are 1-based
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
 
     const formattedDate = `${year}-${month}-${day}`;
 
@@ -76,9 +85,8 @@ export default function HomePageAdmin() {
 
     axios.get(`http://localhost:8000/api/queuedoctor?targetDate=${formattedDate}`)
       .then(response => {
-        // Handle the response data here
         console.log("Data fetched:", response.data.data);
-        setReservationData(response.data.data)
+        setReservationData(response.data.data);
       })
       .catch(error => {
         console.error("Error fetching data:", error);
@@ -91,26 +99,23 @@ export default function HomePageAdmin() {
     if (!date) return '';
 
     try {
-      // Convert the input date to a JavaScript Date object
       const jsDate = new Date(date);
-
-      // Extract the day, month, and year parts
       const formatday = jsDate.getDate().toString().padStart(2, '0');
-      const formatonth = (jsDate.getMonth() + 1).toString().padStart(2, '0'); // getMonth() is zero-based
-      const formatyear = (jsDate.getFullYear() + 543).toString(); // Convert Gregorian year to Buddhist year
+      const formatmonth = (jsDate.getMonth() + 1).toString().padStart(2, '0');
+      const formatyear = (jsDate.getFullYear() + 543).toString();
 
-      // Format as "dd/mm/yyyy"
-      return `${formatday}/${formatonth}/${formatyear}`;
+      return `${formatday}/${formatmonth}/${formatyear}`;
     } catch (error) {
       console.error('Invalid date format', error);
       return 'ไม่พบข้อมูล';
     }
   };
 
-
   const formatTime = (date) => {
     if (!date) return '';
-    return date.split('T')[1].split('.')[0];
+    const [time] = date.split('T')[1].split('.');
+    const [hours, minutes] = time.split(':');
+    return `${hours}:${minutes} น.`;
   };
 
   return (
@@ -125,7 +130,7 @@ export default function HomePageAdmin() {
             </ArrowButton>
             <Week
               weekData={weekData}
-              setCurrentDate={fetchData} // Pass Axios fetch function to Week component
+              setCurrentDate={fetchData}
               currentDate={currentDate}
             />
             <ArrowButton value="next" onClick={weekHandler}>
@@ -144,30 +149,29 @@ export default function HomePageAdmin() {
           </BackButtonContainer>
           {currentDate && (
             <div style={{ padding: '35px', textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-              <table style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                borderRadius: '10px',
-                backgroundColor: '#f5f5f5' // Optional: background color for visibility
-              }}>
-                <thead>
-                  <tr>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>วันที่</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>เวลา</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ชื่อผู้จอง</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>เบอร์โทร</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>ประเภทการจอง</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>สถานะดำเนินการ</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>หมายเหตุ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reservationData
-                    ? reservationData.map((reservation, index) => (
+              {reservationData && reservationData.length > 0 ? (
+                <table style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  borderRadius: '10px',
+                  backgroundColor: '#f5f5f5'
+                }}>
+                  <thead>
+                    <tr>
+                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>วันที่</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>เวลา</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ชื่อผู้จอง</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>เบอร์โทร</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>ประเภทการจอง</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>สถานะดำเนินการ</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>หมายเหตุ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reservationData.map((reservation, index) => (
                       <tr key={index}>
                         <td style={{ padding: '0 10px', fontSize: '14px', color: '#575757' }}>
                           {formatDate(reservation.dataday)}
-
                         </td>
                         <td
                           style={{
@@ -217,14 +221,15 @@ export default function HomePageAdmin() {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {reservation.status}
+                          {formatstatus(reservation.status)}
                         </td>
-
                       </tr>
-                    ))
-                    : null}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p style={{ padding: '35px', fontSize: '30px', color: '#d2140a' }}>วันนี้ไม่มีคิวจอง</p>
+              )}
             </div>
           )}
           <BackButtonContainer style={{ justifyContent: "flex-end" }}>
