@@ -28,12 +28,16 @@ import {
   CalendarIconContainer,
   BackButton
 } from "./styles";
+import { FormOutlined } from '@ant-design/icons'; // Import the icon
+import { Modal, Input, Button } from 'antd'; // Import Ant Design components
 
 export default function HomePageAdmin() {
   const [weekData, setWeekData] = useState([]);
   const [currentDate, setCurrentDate] = useState();
   const [showCalendar, setShowCalendar] = useState(false);
   const [reservationData, setReservationData] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
+  const [currentNote, setCurrentNote] = useState(''); // State for storing the note
 
   useEffect(() => {
     let d = new Date();
@@ -118,6 +122,20 @@ export default function HomePageAdmin() {
     return `${hours}:${minutes} น.`;
   };
 
+  const handleIconClick = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalOk = () => {
+    // Handle saving the note here
+    console.log("Note saved:", currentNote);
+    setIsModalVisible(false);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div style={{ width: "1150px" }}>
       <Calendar style={{ width: "100%" }}>
@@ -143,13 +161,13 @@ export default function HomePageAdmin() {
             {!showBackButton(weekData)?.isCurrentWeek &&
               showBackButton(weekData)?.left ? (
               <BackButton style={{ padding: '15px 30px', fontSize: '20px' }} onClick={handleClick}>
-                {"<< back to today"}
+                {"<< กลับไปวันนี้"}
               </BackButton>
             ) : null}
           </BackButtonContainer>
           {currentDate && (
-            <div style={{ padding: '35px', textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-              {reservationData && reservationData.length > 0 ? (
+            <div style={{ padding: '35px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', height: '100vh' }}>
+              {reservationData && reservationData.length > 0 && (
                 <table style={{
                   width: '100%',
                   borderCollapse: 'collapse',
@@ -170,65 +188,93 @@ export default function HomePageAdmin() {
                   <tbody>
                     {reservationData.map((reservation, index) => (
                       <tr key={index}>
-                        <td style={{ padding: '0 10px', fontSize: '14px', color: '#575757' }}>
+                        <td style={{ padding: '0 20px', fontSize: '14px', color: '#575757' }}>
                           {formatDate(reservation.dataday)}
                         </td>
                         <td
                           style={{
-                            padding: '0 10px',
+                            padding: '0 20px',
                             fontSize: '14px',
                             color: '#575757',
                             whiteSpace: 'nowrap',
+                            borderRight: '1px solid #ddd', // Divider between columns
+                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
                           }}
                         >
                           {formatTime(reservation.dataday)}
                         </td>
                         <td
                           style={{
-                            padding: '0 10px',
+                            padding: '0 20px',
                             fontSize: '14px',
                             color: '#575757',
                             whiteSpace: 'nowrap',
+                            borderRight: '1px solid #ddd', // Divider between columns
+                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
                           }}
                         >
                           {reservation.name}
                         </td>
                         <td
                           style={{
-                            padding: '0 10px',
+                            padding: '0 20px',
                             fontSize: '14px',
                             color: '#575757',
                             whiteSpace: 'nowrap',
+                            borderRight: '1px solid #ddd', // Divider between columns
+                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
                           }}
                         >
                           {reservation.numphone}
                         </td>
                         <td
                           style={{
-                            padding: '0 10px',
+                            padding: '0 20px',
                             fontSize: '14px',
                             color: '#575757',
                             whiteSpace: 'nowrap',
+                            borderRight: '1px solid #ddd', // Divider between columns
+                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
                           }}
                         >
                           {reservation.reservation_type}
                         </td>
                         <td
                           style={{
-                            padding: '0 10px',
+                            padding: '0 20px',
                             fontSize: '14px',
                             color: '#575757',
                             whiteSpace: 'nowrap',
+                            borderRight: '1px solid #ddd', // Divider between columns
+                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
                           }}
                         >
                           {formatstatus(reservation.status)}
                         </td>
+                        <td
+                          style={{
+                            padding: '0 20px',
+                            fontSize: '14px',
+                            color: '#575757',
+                            whiteSpace: 'nowrap',
+                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {reservation.note}
+                          <Button
+                            icon={<FormOutlined />}
+                            style={{ marginLeft: '8px', color: '#1890ff' }}
+                            onClick={handleIconClick}
+                            aria-label="Edit Note"
+                          />
+                        </td>
+
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              ) : (
-                <p style={{ padding: '35px', fontSize: '30px', color: '#d2140a' }}>วันนี้ไม่มีคิวจอง</p>
               )}
             </div>
           )}
@@ -236,7 +282,7 @@ export default function HomePageAdmin() {
             {!showBackButton(weekData)?.isCurrentWeek &&
               showBackButton(weekData)?.right ? (
               <BackButton style={{ padding: '15px 30px', fontSize: '20px' }} onClick={handleClick}>
-                {"back to today >>"}
+                {"กลับไปวันนี้ >>"}
               </BackButton>
             ) : null}
           </BackButtonContainer>
@@ -256,6 +302,24 @@ export default function HomePageAdmin() {
           </CalendarIconContainer>
         </Bottom>
       </Calendar>
+
+      {/* Modal for entering notes */}
+      <Modal
+        title="รายละเอียดการรักษา"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        okText="บันทึก"
+        cancelText="ยกเลิก"
+        style={{ top: '20%' }} // Adjust the top position as needed
+        bodyStyle={{ textAlign: 'center' }} // Center the content inside the modal
+      >
+        <Input.TextArea
+          rows={4}
+          value={currentNote}
+          onChange={(e) => setCurrentNote(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 }
