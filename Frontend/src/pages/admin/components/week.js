@@ -6,7 +6,7 @@ export default function Week({ weekData, setCurrentDate, currentDate }) {
     const weekdays = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
 
     const handleDateClick = (date) => {
-        setCurrentDate(date); // This triggers the Axios request in HomePageAdmin.js
+        setCurrentDate(date);
     };
 
     return (

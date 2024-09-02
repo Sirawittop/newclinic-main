@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 // App
 export const Calendar = styled.div`
-  background: white;
+  background: #f9fafa;
   height: 90vh;
   width: 90vw;
   z-index: 1;

@@ -572,7 +572,11 @@ app.get('/api/queuedoctor', async (req, res) => {
 
   try {
     const [results] = await conn.query(
-      "SELECT * FROM reservationqueue WHERE DATE(dataday) = ?",
+      `SELECT * FROM reservationqueue 
+       WHERE DATE(dataday) = ? 
+         AND name IS NOT NULL 
+         AND numphone IS NOT NULL 
+         AND email IS NOT NULL`,
       [targetDate]
     );
     res.json({
@@ -586,4 +590,5 @@ app.get('/api/queuedoctor', async (req, res) => {
       error,
     });
   }
+
 });
