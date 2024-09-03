@@ -30,24 +30,39 @@ const IndexUser = () => {
   }, []);
 
   useEffect(() => {
+    const dayMap = {
+      'Mon': 'จันทร์',
+      'Tue': 'อังคาร',
+      'Wed': 'พุธ',
+      'Thu': 'พฤหัสบดี',
+      'Fri': 'ศุกร์',
+      'Sat': 'เสาร์',
+      'Sun': 'อาทิตย์'
+    };
     const monthMap = {
-      Jan: 'มกราคม',
-      Feb: 'กุมภาพันธ์',
-      Mar: 'มีนาคม',
-      Apl: 'เมษายน',
-      May: 'พฤษภาคม',
-      June: 'มิถุนายน',
-      July: 'กรกฎาคม',
-      Aug: 'สิงหาคม',
-      Sep: 'กันยายน',
-      Oct: 'ตุลาคม',
-      Nov: 'พฤศจิกายน',
-      Dec: 'ธันวาคม'
+      Jan: 'ม.ค.',
+      Feb: 'ก.พ.',
+      Mar: 'มี.ค.',
+      Apr: 'เม.ย.',
+      May: 'พ.ค.',
+      Jun: 'มิ.ย.',
+      Jul: 'ก.ค.',
+      Aug: 'ส.ค.',
+      Sep: 'ก.ย.',
+      Oct: 'ต.ค.',
+      Nov: 'พ.ย.',
+      Dec: 'ธ.ค.'
     };
 
-    // Function to translate month names
-    const translateMonthNames = () => {
-      document.querySelectorAll('.datepicker-month-label').forEach(element => {
+    const translateNames = () => {
+      document.querySelectorAll('.datepicker-day-label').forEach(element => {
+        const englishDay = element.textContent.trim();
+        if (dayMap[englishDay]) {
+          element.textContent = dayMap[englishDay];
+        }
+      });
+
+      document.querySelectorAll('.scroll-head').forEach(element => {
         const englishMonth = element.textContent.trim();
         if (monthMap[englishMonth]) {
           element.textContent = monthMap[englishMonth];
@@ -55,30 +70,33 @@ const IndexUser = () => {
       });
     };
 
-    // Create a MutationObserver to watch for changes in the DOM
     const observer = new MutationObserver(() => {
-      translateMonthNames();
+      translateNames();
     });
 
-    // Start observing the body for changes
-    observer.observe(document.body, { childList: true, subtree: true });
+    const calendarContainer = document.querySelector('.main-container');
+    if (calendarContainer) {
+      observer.observe(calendarContainer, { childList: true, subtree: true });
+    }
 
-    // Initial translation after component mounts
-    translateMonthNames();
+    translateNames();
 
-    // Cleanup observer on component unmount
-    return () => observer.disconnect();
+    return () => {
+      if (calendarContainer) {
+        observer.disconnect();
+      }
+    };
   }, []);
 
   const handleSelectedDay = (date) => {
     setSelectedDate(date);
-    setSelectedTimes([]); // Clear selected times when a new date is selected
-    setSelectAll(false); // Reset the "Select All" checkbox
+    setSelectedTimes([]);
+    setSelectAll(false);
 
     let timeRange = [];
     switch (date.getDay()) {
-      case 0: // Sunday
-      case 3: // Wednesday
+      case 0:
+      case 3:
         timeRange = 'วันนี้ร้านปิดค่ะ';
         break;
       default:
@@ -114,8 +132,8 @@ const IndexUser = () => {
 
   const formatTime = (time) => {
     const [startTime] = time.split(' - ');
-    const [hour] = startTime.split('.'); // Split the time string by '.'
-    return `${hour.padStart(2, '0')}:00`; // Pad the hour with leading zero if needed and append ':00:00'
+    const [hour] = startTime.split('.');
+    return `${hour.padStart(2, '0')}:00`;
   };
 
   const handleCheckboxChange = (timeRange) => {
@@ -130,11 +148,25 @@ const IndexUser = () => {
 
   const handleSelectAll = () => {
     if (selectAll) {
-      setSelectedTimes([]); // Deselect all if already selected
+      setSelectedTimes([]);
     } else {
-      setSelectedTimes(availableTimeRange); // Select all available time slots
+      const availableTimes = availableTimeRange.filter((timeRange) => {
+        const dateKey = selectedDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: '2-digit'
+        });
+        const startTime = timeRange.split(' - ')[0];
+        // ตรวจสอบว่า time range นี้ไม่ถูกจอง (ไม่ถูก disable)
+        const isBooked = bookedSlots.some((slot) => {
+          return slot.dataday === dateKey && slot.time === startTime;
+        });
+        return !isBooked; // เลือกเฉพาะช่วงเวลาที่ไม่ถูกจอง
+      });
+
+      setSelectedTimes(availableTimes);
     }
-    setSelectAll(!selectAll); // Toggle the selectAll state
+    setSelectAll(!selectAll);
   };
 
   const bookSlots = async () => {
@@ -172,9 +204,7 @@ const IndexUser = () => {
 
   return (
     <Container maxWidth="md">
-      <MuiTypography variant="h3" align="center" gutterBottom>
-        
-      </MuiTypography>
+      <MuiTypography variant="h3" align="center" gutterBottom></MuiTypography>
       <div className="main-container">
         <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
         {selectedDate && bookedSlots && (
@@ -202,7 +232,7 @@ const IndexUser = () => {
                     month: 'numeric',
                     day: '2-digit'
                   });
-                  const startTime = timeRange.split(' - ')[0]; // Extract the start time
+                  const startTime = timeRange.split(' - ')[0];
                   const isBooked = bookedSlots.some((slot) => {
                     return slot.dataday === dateKey && slot.time === startTime;
                   });
@@ -223,7 +253,7 @@ const IndexUser = () => {
                   );
                 })}
                 {selectedTimes.length > 0 && (
-                  <button onClick={bookSlots} style={{ margintop: '5px' , }}>
+                  <button onClick={bookSlots} style={{ margintop: '10px' }}>
                     ลบคิวจอง
                   </button>
                 )}
