@@ -593,7 +593,7 @@ app.get('/api/queuedoctor', async (req, res) => {
 
 });
 
-app.post('/api/trintrin_kuy', async (req, res) => {
+app.post('/api/doctordescription', async (req, res) => {
   const { id, doctordescription } = req.body;
 
   try {

@@ -138,7 +138,7 @@ export default function HomePageAdmin() {
       };
 
       // Send the data to the backend
-      const response = await axios.post('http://localhost:8000/api/trintrin_kuy', payload);
+      const response = await axios.post('http://localhost:8000/api/doctordescription', payload);
 
       // Handle success response
       console.log(response.data.message);
@@ -153,7 +153,7 @@ export default function HomePageAdmin() {
   const handleModalCancel = () => {
     setIsModalVisible(false);
   };
-
+  console.log(formatTime(reservationData?.dataday));
   return (
     <div style={{ width: "1150px" }}>
       <Calendar style={{ width: "100%" }}>
