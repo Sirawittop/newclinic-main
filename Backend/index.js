@@ -393,7 +393,7 @@ app.get('/api/historybooking', async (req, res) => {
     }
 
     const [results] = await conn.query(
-      `SELECT DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type ,status
+      `SELECT DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type ,status , doctordescription
        FROM reservationqueue 
        WHERE email = ?`,
       [user.email]
@@ -591,4 +591,26 @@ app.get('/api/queuedoctor', async (req, res) => {
     });
   }
 
+});
+
+app.post('/api/trintrin_kuy', async (req, res) => {
+  const { id, doctordescription } = req.body;
+
+  try {
+    const [results] = await conn.query(
+      `UPDATE reservationqueue 
+       SET status = 2, doctordescription = ?
+       WHERE id = ?`,
+      [doctordescription, id] // Correct order of values
+    );
+    res.json({
+      message: "Cancel queue booking success",
+    });
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(403).json({
+      message: "Cancel queue booking failed",
+      error,
+    });
+  }
 });

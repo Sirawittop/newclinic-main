@@ -136,7 +136,7 @@ const Historybooking = () => {
             <p>เวลาจอง: {formatTime(selectedBooking.time)}</p>
             <p>จองคิวรักษาอะไร: {selectedBooking.reservation_type}</p>
             <p>สถานะดำเนินการ: {formatstatus(selectedBooking.status)}</p>
-            <p>รายละเอียดการเข้ารับการรักษา: {selectedBooking.details}</p>
+            <p>รายละเอียดการเข้ารับการรักษา: {selectedBooking.doctordescription}</p>
             {/* Add more details as needed */}
           </div>
         )}

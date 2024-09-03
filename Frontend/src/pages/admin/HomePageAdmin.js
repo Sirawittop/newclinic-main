@@ -38,6 +38,7 @@ export default function HomePageAdmin() {
   const [reservationData, setReservationData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
   const [currentNote, setCurrentNote] = useState(''); // State for storing the note
+  const [reservationId, setReservationId] = useState(null); // State for storing the reservation ID
 
   useEffect(() => {
     let d = new Date();
@@ -122,14 +123,31 @@ export default function HomePageAdmin() {
     return `${hours}:${minutes} น.`;
   };
 
-  const handleIconClick = () => {
+  const handleIconClick = (id) => {
+    // console.log("Reservation ID:", id);
+    setReservationId(id);
     setIsModalVisible(true);
   };
 
-  const handleModalOk = () => {
-    // Handle saving the note here
-    console.log("Note saved:", currentNote);
-    setIsModalVisible(false);
+  const handleModalOk = async () => {
+    try {
+      // Assuming you have the reservation ID and doctor's description (currentNote)
+      const payload = {
+        id: reservationId,  // You need to have this value from your logic
+        doctordescription: currentNote,
+      };
+
+      // Send the data to the backend
+      const response = await axios.post('http://localhost:8000/api/trintrin_kuy', payload);
+
+      // Handle success response
+      console.log(response.data.message);
+      // Close the modal
+      setIsModalVisible(false);
+    } catch (error) {
+      // Handle error
+      console.error("Error:", error.response ? error.response.data : error.message);
+    }
   };
 
   const handleModalCancel = () => {
@@ -266,7 +284,7 @@ export default function HomePageAdmin() {
                           <Button
                             icon={<FormOutlined />}
                             style={{ marginLeft: '8px', color: '#1890ff' }}
-                            onClick={handleIconClick}
+                            onClick={() => handleIconClick(reservation.id)}
                             aria-label="Edit Note"
                           />
                         </td>
