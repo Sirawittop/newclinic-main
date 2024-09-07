@@ -28,17 +28,17 @@ import {
   CalendarIconContainer,
   BackButton
 } from "./styles";
-import { FormOutlined } from '@ant-design/icons'; // Import the icon
-import { Modal, Input, Button } from 'antd'; // Import Ant Design components
+import { FormOutlined } from '@ant-design/icons';
+import { Modal, Input, Button } from 'antd';
 
 export default function HomePageAdmin() {
   const [weekData, setWeekData] = useState([]);
   const [currentDate, setCurrentDate] = useState();
   const [showCalendar, setShowCalendar] = useState(false);
   const [reservationData, setReservationData] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
-  const [currentNote, setCurrentNote] = useState(''); // State for storing the note
-  const [reservationId, setReservationId] = useState(null); // State for storing the reservation ID
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentNote, setCurrentNote] = useState('');
+  const [reservationId, setReservationId] = useState(null);
 
   useEffect(() => {
     let d = new Date();
@@ -70,15 +70,14 @@ export default function HomePageAdmin() {
 
   const formatstatus = (status) => {
     if (status === 1) {
-      return 'กำลังดำเนินการ';
+      return { text: 'กำลังดำเนินการ', color: '#FFD700' }; // Yellow
     } else if (status === 2) {
-      return 'เสร็จสิ้น';
+      return { text: 'เสร็จสิ้น', color: '#4CAF50' }; // Green
     } else if (status === 3) {
-      return 'ยกเลิก';
+      return { text: 'ยกเลิก', color: '#FF0000' }; // Red
     }
   };
 
-  // Axios request function to fetch data based on the selected date
   const fetchData = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -118,34 +117,29 @@ export default function HomePageAdmin() {
 
   const formatTime = (date) => {
     if (!date) return '';
-    const [time] = date.split('T')[1].split('.');
-    const [hours, minutes] = time.split(':');
+
+    const timePart = date.split('T')[1];
+    const [hours, minutes] = timePart.split(':');
     return `${hours}:${minutes} น.`;
   };
 
   const handleIconClick = (id) => {
-    // console.log("Reservation ID:", id);
     setReservationId(id);
     setIsModalVisible(true);
   };
 
   const handleModalOk = async () => {
     try {
-      // Assuming you have the reservation ID and doctor's description (currentNote)
       const payload = {
-        id: reservationId,  // You need to have this value from your logic
+        id: reservationId,
         doctordescription: currentNote,
       };
 
-      // Send the data to the backend
       const response = await axios.post('http://localhost:8000/api/doctordescription', payload);
 
-      // Handle success response
       console.log(response.data.message);
-      // Close the modal
       setIsModalVisible(false);
     } catch (error) {
-      // Handle error
       console.error("Error:", error.response ? error.response.data : error.message);
     }
   };
@@ -153,7 +147,7 @@ export default function HomePageAdmin() {
   const handleModalCancel = () => {
     setIsModalVisible(false);
   };
-  console.log(formatTime(reservationData?.dataday));
+
   return (
     <div style={{ width: "1150px" }}>
       <Calendar style={{ width: "100%" }}>
@@ -189,8 +183,10 @@ export default function HomePageAdmin() {
                 <table style={{
                   width: '100%',
                   borderCollapse: 'collapse',
+                  borderSpacing: '0',
                   borderRadius: '10px',
-                  backgroundColor: '#f5f5f5'
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #ddd',
                 }}>
                   <thead>
                     <tr>
@@ -205,90 +201,83 @@ export default function HomePageAdmin() {
                   </thead>
                   <tbody>
                     {reservationData.map((reservation, index) => (
-                      <tr key={index}>
-                        <td style={{ padding: '0 20px', fontSize: '14px', color: '#575757' }}>
+                      <tr key={index} style={{ backgroundColor: '#fff' }}>
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: '#575757',
+                          border: '1px solid #ddd'
+                        }}>
                           {formatDate(reservation.dataday)}
                         </td>
-                        <td
-                          style={{
-                            padding: '0 20px',
-                            fontSize: '14px',
-                            color: '#575757',
-                            whiteSpace: 'nowrap',
-                            borderRight: '1px solid #ddd', // Divider between columns
-                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
-                          }}
-                        >
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: '#575757',
+                          whiteSpace: 'nowrap',
+                          border: '1px solid #ddd'
+                        }}>
                           {formatTime(reservation.dataday)}
                         </td>
-                        <td
-                          style={{
-                            padding: '0 20px',
-                            fontSize: '14px',
-                            color: '#575757',
-                            whiteSpace: 'nowrap',
-                            borderRight: '1px solid #ddd', // Divider between columns
-                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
-                          }}
-                        >
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: '#575757',
+                          whiteSpace: 'nowrap',
+                          border: '1px solid #ddd'
+                        }}>
                           {reservation.name}
                         </td>
-                        <td
-                          style={{
-                            padding: '0 20px',
-                            fontSize: '14px',
-                            color: '#575757',
-                            whiteSpace: 'nowrap',
-                            borderRight: '1px solid #ddd', // Divider between columns
-                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
-                          }}
-                        >
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: '#575757',
+                          whiteSpace: 'nowrap',
+                          border: '1px solid #ddd'
+                        }}>
                           {reservation.numphone}
                         </td>
-                        <td
-                          style={{
-                            padding: '0 20px',
-                            fontSize: '14px',
-                            color: '#575757',
-                            whiteSpace: 'nowrap',
-                            borderRight: '1px solid #ddd', // Divider between columns
-                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
-                          }}
-                        >
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '15px',
+                          color: '#575757',
+                          whiteSpace: 'nowrap',
+                          border: '1px solid #ddd'
+                        }}>
                           {reservation.reservation_type}
                         </td>
-                        <td
-                          style={{
-                            padding: '0 20px',
-                            fontSize: '14px',
-                            color: '#575757',
-                            whiteSpace: 'nowrap',
-                            borderRight: '1px solid #ddd', // Divider between columns
-                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
-                          }}
-                        >
-                          {formatstatus(reservation.status)}
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: formatstatus(reservation.status).color,
+                          whiteSpace: 'nowrap',
+                          border: '1px solid #ddd',
+                          fontWeight: 'bold'
+                        }}>
+                          {formatstatus(reservation.status).text}
                         </td>
-                        <td
-                          style={{
-                            padding: '0 20px',
-                            fontSize: '14px',
-                            color: '#575757',
-                            whiteSpace: 'nowrap',
-                            borderBottom: '1px solid #ddd', // Border at the bottom of the cell
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                        >
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: '#575757',
+                          whiteSpace: 'nowrap',
+                          display: 'flex',
+                          alignItems: 'center',
+                          border: '1px solid #ddd'
+                        }}>
                           {reservation.note}
                           <Button
                             icon={<FormOutlined />}
-                            style={{ marginLeft: '8px', color: '#1890ff' }}
+                            style={{
+                              marginLeft: '8px',
+                              color: reservation.status === 2 ? '#ff4d4f' : '#1890ff',
+                              cursor: reservation.status === 2 ? 'not-allowed' : 'pointer',
+                            }}
                             onClick={() => handleIconClick(reservation.id)}
+                            disabled={reservation.status === 2}
                             aria-label="Edit Note"
                           />
                         </td>
-
                       </tr>
                     ))}
                   </tbody>
@@ -321,7 +310,6 @@ export default function HomePageAdmin() {
         </Bottom>
       </Calendar>
 
-      {/* Modal for entering notes */}
       <Modal
         title="รายละเอียดการรักษา"
         visible={isModalVisible}
@@ -329,8 +317,8 @@ export default function HomePageAdmin() {
         onCancel={handleModalCancel}
         okText="บันทึก"
         cancelText="ยกเลิก"
-        style={{ top: '20%' }} // Adjust the top position as needed
-        bodyStyle={{ textAlign: 'center' }} // Center the content inside the modal
+        style={{ top: '20%' }}
+        bodyStyle={{ textAlign: 'center' }}
       >
         <Input.TextArea
           rows={4}
@@ -341,4 +329,3 @@ export default function HomePageAdmin() {
     </div>
   );
 }
-

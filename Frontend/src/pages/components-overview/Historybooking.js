@@ -33,6 +33,21 @@ const Historybooking = () => {
     fetchBookings();
   }, []);
 
+  const cancelBooking = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`http://localhost:8000/api/cancelbooking/${bookingId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("Booking canceled:", response.data);
+      setBookings(bookings.filter(b => b.id !== bookingId)); // Update state after cancellation
+    } catch (error) {
+      console.error("Error canceling booking:", error);
+    }
+  };
+
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
     return `${day}/${month}/${year}`; // Reformat to Day/Month/Year
@@ -52,25 +67,20 @@ const Historybooking = () => {
   };
 
   const confirmCancelBooking = (booking) => {
+    console.log("Booking to cancel:", booking); // Debugging step
+
+    if (!booking.id) {
+      console.error("Booking ID is undefined");
+      return;
+    }
+
     Modal.confirm({
       title: 'ยกเลิกการจอง',
       content: 'คุณแน่ใจหรือว่าต้องการยกเลิกการจองนี้?',
       okText: 'ใช่, ยกเลิก',
       cancelText: 'ไม่',
       centered: true,  // ทำให้ Modal เด้งขึ้นกลางจอ
-      onOk: async () => {
-        try {
-          const token = localStorage.getItem('token');
-          await axios.delete(`http://localhost:8000/api/cancelbooking/${booking.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setBookings(bookings.filter(b => b.id !== booking.id));
-        } catch (error) {
-          console.error('Error cancelling booking:', error);
-        }
-      },
+      onOk: () => cancelBooking(booking.id),
     });
   };
 
@@ -91,7 +101,7 @@ const Historybooking = () => {
           <tr>
             <th className="headerCell">วันที่จอง</th>
             <th className="headerCell">เวลาจอง</th>
-            <th className="headerCell">จองคิวรักษาอะไร</th>
+            <th className="headerCell">ประเภทการจอง</th>
             <th className="headerCell">สถานะดำเนินการ</th>
             <th className="headerCell">รายละเอียด</th>
             <th className="headerCell cancel-column">ยกเลิกการจองคิว</th>
@@ -110,8 +120,15 @@ const Historybooking = () => {
                 </button>
               </td>
               <td className="cell centered-cell cancel-column">
-                <button onClick={() => confirmCancelBooking(booking)}>
-                  <CloseCircleOutlined style={{ color: 'red' }} />
+                <button
+                  onClick={() => confirmCancelBooking(booking)}
+                  disabled={booking.status === 2} // Disable the button if status is "เสร็จสิ้น"
+                  style={{
+                    color: booking.status === 2 ? 'gray' : 'red', // Change color to gray when disabled
+                    cursor: booking.status === 2 ? 'not-allowed' : 'pointer' // Change cursor to not-allowed when disabled
+                  }}
+                >
+                  <CloseCircleOutlined />
                 </button>
               </td>
             </tr>

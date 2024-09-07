@@ -614,3 +614,38 @@ app.post('/api/doctordescription', async (req, res) => {
     });
   }
 });
+
+
+app.delete("/api/cancelbooking/:id", async (req, res) => {
+  const { id } = req.params; // Extracting `id` from req.params
+  try {
+    // Check if the booking exists
+    const [booking] = await conn.query(
+      "SELECT id FROM reservationqueue WHERE id = ?",
+      [id]
+    );
+
+    if (!booking || booking.length === 0) {
+      return res.status(404).json({
+        message: "Booking not found",
+      });
+    }
+
+    // Delete the booking
+    const [results] = await conn.query(
+      "DELETE FROM reservationqueue WHERE id = ?",
+      [id]
+    );
+
+    res.json({
+      message: "Cancel queue booking success",
+    });
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).json({
+      message: "Cancel queue booking failed",
+      error: error.message,
+    });
+  }
+});
+
