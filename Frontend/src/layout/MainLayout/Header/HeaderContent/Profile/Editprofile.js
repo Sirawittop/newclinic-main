@@ -46,14 +46,19 @@ const EditProfile = () => {
 
   const handleFullNameChange = (e) => {
     const { value } = e.target;
-    const nameRegex = /^[^\d]*$/;
-    if (nameRegex.test(value)) {
+    const nameRegex = /^[a-zA-Zก-๙\s]+$/;
+    const thaiDigitRegex = /[๑-๙]/;
+
+    // อนุญาตให้ช่องว่าง (ไม่มีตัวอักษรใดๆ) ผ่านได้
+    if ((value === '' || nameRegex.test(value)) && !thaiDigitRegex.test(value)) {
       setFullName(value);
       setErrors((prev) => ({ ...prev, fullName: '' }));
     } else {
-      setErrors((prev) => ({ ...prev, fullName: 'ชื่อผู้ใช้ไม่ควรมีตัวเลข' }));
+      setErrors((prev) => ({ ...prev, fullName: 'ชื่อไม่ควรมีตัวเลขหรือตัวอักษรพิเศษ' }));
     }
   };
+
+
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -66,8 +71,8 @@ const EditProfile = () => {
     if (phoneRegex.test(value) && value.length <= 10) {
       setPhoneNumber(value);
       setErrors((prev) => ({ ...prev, phoneNumber: '' }));
-    } else if (value.length > 10) {
-      setErrors((prev) => ({ ...prev, phoneNumber: 'หมายเลขโทรศัพท์ควรมีไม่เกิน 10 ตัวเลข' }));
+    } else if (value.length !== 10) {
+      setErrors((prev) => ({ ...prev, phoneNumber: 'หมายเลขโทรศัพท์ควรมี 10 ตัวเลข' }));
     } else {
       setErrors((prev) => ({ ...prev, phoneNumber: 'หมายเลขโทรศัพท์ควรมีเฉพาะตัวเลข' }));
     }
@@ -87,8 +92,8 @@ const EditProfile = () => {
       valid = false;
     }
 
-    if (!phoneNumber) {
-      newErrors.phoneNumber = 'โปรดใส่เบอร์โทรศัพท์';
+    if (!phoneNumber || phoneNumber.length !== 10) {
+      newErrors.phoneNumber = 'หมายเลขโทรศัพท์ควรมี 10 ตัวเลข';
       valid = false;
     }
 

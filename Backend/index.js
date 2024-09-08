@@ -393,7 +393,7 @@ app.get('/api/historybooking', async (req, res) => {
     }
 
     const [results] = await conn.query(
-      `SELECT DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type ,status , doctordescription
+      `SELECT id,DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type ,status , doctordescription
        FROM reservationqueue 
        WHERE email = ?`,
       [user.email]

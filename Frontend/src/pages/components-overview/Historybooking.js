@@ -42,7 +42,12 @@ const Historybooking = () => {
         }
       });
       console.log("Booking canceled:", response.data);
-      setBookings(bookings.filter(b => b.id !== bookingId)); // Update state after cancellation
+
+      // Update state after cancellation
+      setBookings(bookings.filter(b => b.id !== bookingId));
+
+      // Display success alert
+      alert('ยกเลิกคิวสำเร็จ');
     } catch (error) {
       console.error("Error canceling booking:", error);
     }
@@ -69,11 +74,6 @@ const Historybooking = () => {
   const confirmCancelBooking = (booking) => {
     console.log("Booking to cancel:", booking); // Debugging step
 
-    if (!booking.id) {
-      console.error("Booking ID is undefined");
-      return;
-    }
-
     Modal.confirm({
       title: 'ยกเลิกการจอง',
       content: 'คุณแน่ใจหรือว่าต้องการยกเลิกการจองนี้?',
@@ -86,13 +86,13 @@ const Historybooking = () => {
 
   const formatstatus = (status) => {
     if (status === 1) {
-      return 'กำลังดำเนินการ';
+      return <span style={{ color: '#FFD700' }}>กำลังดำเนินการ</span>;
     } else if (status === 2) {
-      return 'เสร็จสิ้น';
+      return <span style={{ color: '#4CAF50' }}>เสร็จสิ้น</span>;
     } else if (status === 3) {
-      return 'ยกเลิก';
+      return <span style={{ color: '#FF0000' }}>ยกเลิก</span>;
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -142,7 +142,7 @@ const Historybooking = () => {
         onCancel={handleCancel}
         footer={[
           <Button key="close" onClick={handleCancel}>
-            Close
+            ปิด
           </Button>
         ]}
         centered  // ทำให้ Modal เด้งขึ้นกลางจอ

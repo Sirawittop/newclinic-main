@@ -115,13 +115,12 @@ export default function HomePageAdmin() {
     }
   };
 
-  const formatTime = (date) => {
-    if (!date) return '';
-
-    const timePart = date.split('T')[1];
-    const [hours, minutes] = timePart.split(':');
-    return `${hours}:${minutes} น.`;
+  const formatTime = (time) => {
+    // Format time to HH:mm น.
+    if (!time) return '';
+    return `${time.slice(0, 5)} น.`;
   };
+
 
   const handleIconClick = (id) => {
     setReservationId(id);
@@ -147,6 +146,8 @@ export default function HomePageAdmin() {
   const handleModalCancel = () => {
     setIsModalVisible(false);
   };
+
+  console.log("Reservation Data:", reservationData);
 
   return (
     <div style={{ width: "1150px" }}>
@@ -217,7 +218,7 @@ export default function HomePageAdmin() {
                           whiteSpace: 'nowrap',
                           border: '1px solid #ddd'
                         }}>
-                          {formatTime(reservation.dataday)}
+                          {formatTime(reservation.time)}
                         </td>
                         <td style={{
                           padding: '8px',
