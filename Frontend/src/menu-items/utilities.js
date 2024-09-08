@@ -1,6 +1,5 @@
 
 import PetsIcon from '@mui/icons-material/Pets';
-import HomeIcon from '@mui/icons-material/Home';
 import HistoryIcon from '@mui/icons-material/History';
 
 
@@ -12,18 +11,10 @@ const utilities = {
   type: 'group',
   children: [
     {
-      id: 'dashboard',
-      title: 'หน้าหลัก',
-      type: 'item',
-      url: '/dashboard',
-      icon: HomeIcon,
-      breadcrumbs: false
-    },
-    {
-      id: 'util-typography',
+      id: 'booking-queue',
       title: 'จองคิวรักษาสัตว์',
       type: 'item',
-      url: '/typography',
+      url: '/BookingQueue',
       icon: PetsIcon
     },
     {
@@ -33,7 +24,7 @@ const utilities = {
       url: '/Historybooking',
       icon: HistoryIcon
     },
-   
+
   ]
 };
 export default utilities;

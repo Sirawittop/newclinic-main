@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactHorizontalDatePicker from 'react-horizontal-strip-datepicker';
 import 'react-horizontal-strip-datepicker/dist/ReactHorizontalDatePicker.css';
-import './indexuser.css';
+import './timemanagevet.css';
 import axios from 'axios';
 import Container from '@mui/material/Container';
 import MuiTypography from '@mui/material/Typography';
 
-const IndexUser = () => {
+const TimeManageVet = () => {  // Renamed to start with an uppercase letter
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimeRange, setAvailableTimeRange] = useState([]);
   const [bookedSlots, setBookedSlots] = useState([]);
@@ -266,4 +266,4 @@ const IndexUser = () => {
   );
 };
 
-export default IndexUser;
+export default TimeManageVet;

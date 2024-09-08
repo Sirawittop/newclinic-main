@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import Typohraphy from './Typography';
+import Typohraphy from './BookingQueue';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);

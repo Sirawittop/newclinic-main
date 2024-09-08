@@ -55,7 +55,7 @@ const AuthLogin = () => {
               localStorage.setItem('token', response.data.token);
 
               if (response.data.userRole === 1) {
-                navigate('/dashboard');
+                navigate('/BookingQueue');
               } else if (response.data.userRole === 2) {
                 navigate('/HomePageAdmin');
               }

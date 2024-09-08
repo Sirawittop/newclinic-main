@@ -14,14 +14,14 @@ const Dashboarduser = {
       title: 'หน้าหลักหมอ',
       type: 'item',
       url: '/HomePageAdmin',
-      icon: HomeOutlined ,
+      icon: HomeOutlined,
       breadcrumbs: false
     },
     {
       id: 'dashboarduser',
       title: 'จัดตารางเวลาว่าง',
       type: 'item',
-      url: '/indexuser',
+      url: '/timemanagevet',
       icon: EditCalendarIcon,
       breadcrumbs: false
     },
@@ -32,7 +32,7 @@ const Dashboarduser = {
       url: '/Booking',
       icon: MeetingRoomIcon
     }
-  
+
 
 
   ]
