@@ -196,6 +196,7 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
       alert('จองคิวสำเร็จ');
       setSelectedTimes([]);
       setSelectAll(false);
+      window.location.reload();
     } catch (error) {
       console.error(error);
       alert('เกิดข้อผิดพลาดในการจองคิว');

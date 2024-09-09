@@ -14,6 +14,7 @@ const utilities = {
       id: 'booking-queue',
       title: 'จองคิวรักษาสัตว์',
       type: 'item',
+
       url: '/BookingQueue',
       icon: PetsIcon
     },

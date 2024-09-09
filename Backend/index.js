@@ -7,6 +7,8 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const app = express();
+const cron = require('node-cron');
+
 
 app.use(express.json());
 app.use(
@@ -335,7 +337,7 @@ app.post("/api/booking", async (req, res) => {
 ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
 
 🔔 ข้อควรจำ:
-- หากต้องการยกเลิกคิวจอง กรุณากดยกเลิกในระบบก่อนเวลานัด 24 ชั่วโมง
+- หากต้องการยกเลิกคิวจอง กรุณากดยกเลิกในระบบก่อนเวลานัด 12 ชั่วโมง
 
 🙏 ขอบคุณที่เลือกใช้บริการคลินิกของเรา
 เราหวังว่าคุณจะได้รับประสบการณ์ที่ดีในการรักษา
@@ -393,12 +395,12 @@ app.get('/api/historybooking', async (req, res) => {
     }
 
     const [results] = await conn.query(
-      `SELECT id,DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type ,status , doctordescription
+      `SELECT id, DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type, status, doctordescription
        FROM reservationqueue 
-       WHERE email = ?`,
+       WHERE email = ?
+       ORDER BY dataday DESC`,  // Sorting by dataday in descending order
       [user.email]
     );
-
     res.json({
       message: 'Search history booking success',
       data: results,
@@ -414,8 +416,6 @@ app.get('/api/historybooking', async (req, res) => {
 
 // make api sent email for reset password
 app.post("/api/forgotpassword", async (req, res) => {
-
-  console.log("req.body");
 
   const { email } = req.body;
   try {
@@ -481,7 +481,6 @@ app.get("/api/userRole", async (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
-    console.log(results[0].role);
     res.json({ role: results[0].role });
   } catch (error) {
     res.status(500).json({ message: 'Database query failed', error });
@@ -649,3 +648,40 @@ app.delete("/api/cancelbooking/:id", async (req, res) => {
   }
 });
 
+const updateStatusEveryMinute = async () => {
+  conn = await initMySQL(); // Initialize the connection
+
+  cron.schedule('* * * * *', async () => { // This will run every minute
+    try {
+      if (!conn) {
+        console.error('MySQL connection is not initialized.');
+        return;
+      }
+
+      // Get the current date
+      const now = new Date();
+
+      // Calculate the date 1 day ago (to check dates properly)
+      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+      // Format the date to 'YYYY-MM-DD'
+      const formattedDate = oneDayAgo.toISOString().slice(0, 10);
+      console.log('formattedDate', formattedDate);
+
+      // Perform the update query
+      const [results] = await conn.query(
+        `UPDATE reservationqueue 
+         SET status = 3
+         WHERE DATE(dataday) < ? AND status = 1`,
+        [formattedDate]
+      );
+
+      console.log('Scheduled task executed at', now);
+      console.log('Rows affected:', results.affectedRows);
+    } catch (error) {
+      console.log('Error in scheduled task:', error);
+    }
+  });
+};
+
+updateStatusEveryMinute();

@@ -72,6 +72,30 @@ const Calendar4 = () => {
         break;
     }
 
+    // Get the current time
+    const currentTime = new Date();
+
+    // If the selected date is today, filter out past time slots
+    if (
+      date.getDate() === currentTime.getDate() &&
+      date.getMonth() === currentTime.getMonth() &&
+      date.getFullYear() === currentTime.getFullYear()
+    ) {
+      const currentHour = currentTime.getHours();
+      const currentMinutes = currentTime.getMinutes();
+
+      // Filter out time slots that have already passed
+      timeRange = timeRange.filter((time) => {
+        const [startTime] = time.split(' - ');
+        const [startHour, startMinutes] = startTime.split(':').map(Number);
+
+        return (
+          startHour > currentHour ||
+          (startHour === currentHour && startMinutes >= currentMinutes)
+        );
+      });
+    }
+
     setAvailableTimeRange(timeRange);
   };
 
@@ -87,8 +111,6 @@ const Calendar4 = () => {
     const [hour] = startTime.split('.'); // Split the time string by '.'
     return `${hour.padStart(2, '0')}:00`; // Pad the hour with leading zero if needed and append ':00:00'
   };
-
-
 
   const acceptqueue = async () => {
     const data = {

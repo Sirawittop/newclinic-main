@@ -3,6 +3,7 @@ import axios from 'axios';
 import './historybooking.css';
 import { FileTextOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Modal, Button } from 'antd';
+import moment from 'moment'; // Import moment.js for date manipulation
 
 const Historybooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -72,7 +73,12 @@ const Historybooking = () => {
   };
 
   const confirmCancelBooking = (booking) => {
-    console.log("Booking to cancel:", booking); // Debugging step
+    const isBookingCancelable = isCancelable(booking.date, booking.time);
+
+    if (!isBookingCancelable) {
+      alert('ไม่สามารถยกเลิกได้ เนื่องจากเหลือน้อยกว่า 12 ชั่วโมงก่อนถึงเวลาที่จอง');
+      return;
+    }
 
     Modal.confirm({
       title: 'ยกเลิกการจอง',
@@ -90,8 +96,14 @@ const Historybooking = () => {
     } else if (status === 2) {
       return <span style={{ color: '#4CAF50' }}>เสร็จสิ้น</span>;
     } else if (status === 3) {
-      return <span style={{ color: '#FF0000' }}>ยกเลิก</span>;
+      return <span style={{ color: '#FF0000' }}>ไม่มา</span>;
     }
+  };
+
+  const isCancelable = (bookingDate, bookingTime) => {
+    const bookingDateTime = moment(`${bookingDate} ${bookingTime}`, 'YYYY-MM-DD HH:mm:ss');
+    const now = moment();
+    return bookingDateTime.diff(now, 'hours') >= 12;
   };
 
   return (
