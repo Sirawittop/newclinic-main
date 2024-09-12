@@ -314,6 +314,8 @@ app.put("/api/editpassword", async (req, res) => {
   }
 });
 // post api for booking time
+
+
 app.post("/api/booking", async (req, res) => {
   const { name, phone, email, date, time, type } = req.body;
   try {

@@ -134,10 +134,10 @@ const Historybooking = () => {
               <td className="cell centered-cell cancel-column">
                 <button
                   onClick={() => confirmCancelBooking(booking)}
-                  disabled={booking.status === 2} // Disable the button if status is "เสร็จสิ้น"
+                  disabled={booking.status === 2 || booking.status === 3} // Disable the button if status is "เสร็จสิ้น" or 3
                   style={{
-                    color: booking.status === 2 ? 'gray' : 'red', // Change color to gray when disabled
-                    cursor: booking.status === 2 ? 'not-allowed' : 'pointer' // Change cursor to not-allowed when disabled
+                    color: booking.status === 2 || booking.status === 3 ? 'gray' : 'red', // Change color to gray when disabled
+                    cursor: booking.status === 2 || booking.status === 3 ? 'not-allowed' : 'pointer' // Change cursor to not-allowed when disabled
                   }}
                 >
                   <CloseCircleOutlined />

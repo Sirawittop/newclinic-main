@@ -28,7 +28,7 @@ import {
   CalendarIconContainer,
   BackButton
 } from "./styles";
-import { FormOutlined, DeleteOutlined } from '@ant-design/icons'; // Import DeleteOutlined
+import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Modal, Input, Button } from 'antd';
 
 export default function HomePageAdmin() {
@@ -85,11 +85,8 @@ export default function HomePageAdmin() {
 
     const formattedDate = `${year}-${month}-${day}`;
 
-    console.log("Formatted Date:", formattedDate);
-
     axios.get(`http://localhost:8000/api/queuedoctor?targetDate=${formattedDate}`)
       .then(response => {
-        console.log("Data fetched:", response.data.data);
         setReservationData(response.data.data);
       })
       .catch(error => {
@@ -116,7 +113,6 @@ export default function HomePageAdmin() {
   };
 
   const formatTime = (time) => {
-    // Format time to HH:mm น.
     if (!time) return '';
     return `${time.slice(0, 5)} น.`;
   };
@@ -124,6 +120,7 @@ export default function HomePageAdmin() {
   const handleIconClick = (id) => {
     setReservationId(id);
     setIsModalVisible(true);
+    setCurrentNote(reservationData?.find(res => res.id === id)?.doctordescription);
   };
 
   const handleModalOk = async () => {
@@ -137,8 +134,12 @@ export default function HomePageAdmin() {
 
       console.log(response.data.message);
       setIsModalVisible(false);
+
+      alert('รายละเอียดการรักษาได้ถูกบันทึกเรียบร้อยแล้ว');
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
+
+      alert('ไม่สามารถบันทึกรายละเอียดการรักษาได้');
     }
   };
 
@@ -156,10 +157,8 @@ export default function HomePageAdmin() {
       });
       console.log("Booking canceled:", response.data);
 
-      // Update state after cancellation
       setReservationData(reservationData.filter(b => b.id !== bookingId));
 
-      // Display success alert
       alert('ยกเลิกคิวสำเร็จ');
     } catch (error) {
       console.error("Error canceling booking:", error);
@@ -176,8 +175,6 @@ export default function HomePageAdmin() {
       onOk: () => vetcancelBooking(bookingId),
     });
   };
-
-  console.log("Reservation Data:", reservationData);
 
   return (
     <div style={{ width: "1150px" }}>
@@ -217,7 +214,7 @@ export default function HomePageAdmin() {
               alignItems: 'flex-end',
               height: 'auto',
               marginBottom: '20px',
-              marginTop: '350px' // increase this value to move the content further down
+              marginTop: '350px'
             }}>
               {reservationData && reservationData.length > 0 && (
                 <table style={{
@@ -235,8 +232,8 @@ export default function HomePageAdmin() {
                       <th style={{ border: '1px solid #ddd', padding: '8px' }}>เวลา</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ชื่อผู้จอง</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px' }}>เบอร์โทร</th>
-                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>ประเภทการจอง</th>
-                      <th style={{ border: '1px solid #ddd', padding: '8px' }}>สถานะดำเนินการ</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ประเภทการจอง</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>สถานะดำเนินการ</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px' }}>หมายเหตุ</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ยกเลิกการจองคิว</th>
                     </tr>
@@ -313,10 +310,9 @@ export default function HomePageAdmin() {
                             style={{
                               marginLeft: '8px',
                               color: reservation.status === 2 ? '#ff4d4f' : '#1890ff',
-                              cursor: reservation.status === 2 ? 'not-allowed' : 'pointer',
                             }}
                             onClick={() => handleIconClick(reservation.id)}
-                            disabled={reservation.status === 2 || reservation.status === 3}
+                            disabled={reservation.status === 3 || reservation.status === 3}
                             aria-label="Edit Note"
                           />
                         </td>
@@ -372,7 +368,6 @@ export default function HomePageAdmin() {
           </CalendarIconContainer>
         </Bottom>
       </Calendar>
-
       <Modal
         title="รายละเอียดการรักษา"
         visible={isModalVisible}
@@ -387,6 +382,7 @@ export default function HomePageAdmin() {
           rows={4}
           value={currentNote}
           onChange={(e) => setCurrentNote(e.target.value)}
+          disabled={reservationData?.find(res => res.id === reservationId)?.status === 2} // Disable if status is "เสร็จสิ้น"
         />
       </Modal>
     </div>
