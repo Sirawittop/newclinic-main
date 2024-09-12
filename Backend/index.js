@@ -685,3 +685,49 @@ const updateStatusEveryMinute = async () => {
 };
 
 updateStatusEveryMinute();
+
+
+app.delete("/api/vetcancelbooking/:id", async (req, res) => {
+  const { id } = req.params; // Extracting `id` from req.params
+  try {
+    // Check if the booking exists
+    const [booking] = await conn.query(
+      "SELECT id, name, email, dataday, time, reservation_type FROM reservationqueue WHERE id = ?",
+      [id]
+    );
+
+    if (!booking || booking.length === 0) {
+      return res.status(404).json({
+        message: "Booking not found",
+      });
+    }
+
+    const { name, email, dataday, time, reservation_type } = booking[0];
+
+    // Delete the booking
+    await conn.query("DELETE FROM reservationqueue WHERE id = ?", [id]);
+
+    // Send cancellation email using the existing sendEmail function
+    const subject = "Booking Cancellation Confirmation";
+    const text = `สวัสดีคุณ ${name}, 
+
+การจองของคุณสำหรับวันที่ ${formatDate(dataday)} เวลา ${time} ประเภทการรักษา ${reservation_type} ถูกยกเลิกเรียบร้อยแล้ว
+
+หากมีคำถามเพิ่มเติม โปรดติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
+
+ขอแสดงความนับถือ,
+คลินิกบ้านแสนสุข`;
+
+    sendEmail(email, subject, text);
+
+    res.json({
+      message: "Cancel queue booking success, cancellation email sent",
+    });
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).json({
+      message: "Cancel queue booking failed",
+      error: error.message,
+    });
+  }
+});
