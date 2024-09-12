@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const app = express();
 const cron = require('node-cron');
+const crypto = require('crypto');
 
 
 app.use(express.json());
@@ -416,19 +417,29 @@ app.get('/api/historybooking', async (req, res) => {
   }
 });
 
-// make api sent email for reset password
 app.post("/api/forgotpassword", async (req, res) => {
-
   const { email } = req.body;
   try {
     const [results] = await conn.query(
       "SELECT * FROM users WHERE email = ?",
-      email
+      [email]
     );
 
     if (results.length === 0) {
       return res.status(400).send({ message: "Email not found" });
     }
+
+    // Generate a unique token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetTokenExpiry = Date.now() + 3600000; // Token expires in 1 hour
+
+    // Update the user's record with the reset token and expiry
+    await conn.query(
+      "UPDATE users SET resetToken = ?, resetTokenExpiry = ? WHERE email = ?",
+      [resetToken, resetTokenExpiry, email]
+    );
+
+    const resetLink = `http://localhost:3000/AnimalClinic/Forgotpass?token=${resetToken}`;
 
     const subject = "Reset Password";
     const text = `🔒 การรีเซ็ตรหัสผ่าน 🔒
@@ -437,26 +448,58 @@ app.post("/api/forgotpassword", async (req, res) => {
 
 คุณสามารถกดลิงค์ด้านล่างเพื่อรีเซ็ตรหัสผ่านของคุณ
 
-🔗 http://localhost:3000/resetpassword/${results[0].email
-        .split("@")
-        .join("%40")}
-}
+🔗 ${resetLink}
+
+ลิงค์นี้จะหมดอายุใน 1 ชั่วโมง
+
+หากคุณไม่ได้ขอรีเซ็ตรหัสผ่าน กรุณาละเว้นอีเมลนี้
 `;
-    sendEmail(email, subject, text);
+
+    await sendEmail(email, subject, text);
 
     res.json({
       message: "Email sent successfully",
     });
-  }
-  catch (error) {
+  } catch (error) {
     console.log("error", error);
-    res.status(403).json({
+    res.status(500).json({
       message: "Email sent failed",
-      error,
+      error: error.message,
     });
   }
-}
-);
+});
+
+// New endpoint to handle password reset
+app.post("/api/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+  try {
+    const [results] = await conn.query(
+      "SELECT * FROM users WHERE resetToken = ? AND resetTokenExpiry > ?",
+      [token, Date.now()]
+    );
+
+    if (results.length === 0) {
+      return res.status(400).send({ message: "Invalid or expired reset token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await conn.query(
+      "UPDATE users SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE id = ?",
+      [hashedPassword, results[0].id]
+    );
+
+    res.json({
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({
+      message: "Password reset failed",
+      error: error.message,
+    });
+  }
+});
 
 // make api to get data from database
 app.get("/api/userRole", async (req, res) => {
