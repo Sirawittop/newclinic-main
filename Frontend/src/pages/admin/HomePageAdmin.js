@@ -3,6 +3,10 @@ import axios from "axios";
 import Week from "./components/week";
 import ReactCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import {
   getCurrentWeek,
   getNextWeek,
@@ -39,6 +43,30 @@ export default function HomePageAdmin() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentNote, setCurrentNote] = useState('');
   const [reservationId, setReservationId] = useState(null);
+  const [showselected, setShowselected] = useState(false);
+  const [formData, setFormData] = useState({
+    appointmentType: '',
+    datetimevalue: null,
+    timeBlock: '',
+  });
+
+  const timeRange = [
+    '12:00 - 12:30',
+    '12:30 - 13:00',
+    '13:00 - 13:30',
+    '13:30 - 14:00',
+    '14:00 - 14:30',
+    '14:30 - 15:00',
+    '15:00 - 15:30',
+    '15:30 - 16:00',
+    '16:00 - 16:30',
+    '16:30 - 17:00',
+    '17:00 - 17:30',
+    '17:30 - 18:00',
+    '18:00 - 18:30',
+    '18:30 - 19:00',
+    '19:00 - 19:30'
+  ];
 
   useEffect(() => {
     let d = new Date();
@@ -174,6 +202,19 @@ export default function HomePageAdmin() {
       centered: true,
       onOk: () => vetcancelBooking(bookingId),
     });
+  };
+
+  const handleClickAddDatetime = () => {
+    if (showselected) {
+      setShowselected(false);
+    }
+    else {
+      setShowselected(true);
+    }
+  }
+
+  const handleTimeBlockChange = (e) => {
+    setFormData({ ...formData, timeBlock: e.target.value });
   };
 
   return (
@@ -368,6 +409,8 @@ export default function HomePageAdmin() {
           </CalendarIconContainer>
         </Bottom>
       </Calendar>
+
+
       <Modal
         title="รายละเอียดการรักษา"
         visible={isModalVisible}
@@ -377,14 +420,95 @@ export default function HomePageAdmin() {
         cancelText="ยกเลิก"
         style={{ top: '20%' }}
         bodyStyle={{ textAlign: 'center' }}
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <Button
+              key="nextAppointment"
+              type="primary"
+              onClick={() => handleClickAddDatetime()}
+            >
+              นัดหมายครั้งถัดไป
+            </Button>
+            <div>
+              <Button key="cancel" onClick={handleModalCancel}>
+                ยกเลิก
+              </Button>
+              <Button
+                key="save"
+                type="primary"
+                onClick={handleModalOk}
+                style={{ marginLeft: '8px' }}
+              >
+                บันทึก
+              </Button>
+            </div>
+          </div>
+        }
       >
         <Input.TextArea
           rows={4}
           value={currentNote}
           onChange={(e) => setCurrentNote(e.target.value)}
-          disabled={reservationData?.find(res => res.id === reservationId)?.status === 2} // Disable if status is "เสร็จสิ้น"
+          style={{ marginBottom: '20px' }}
         />
+
+        {showselected && (
+          <div>
+            <label>
+              ประเภทการจอง
+              <br />
+              <select
+                value={formData.appointmentType}
+                onChange={(e) => setFormData({ ...formData, appointmentType: e.target.value })}
+                required
+                style={{ width: '50%', padding: '8px', boxSizing: 'border-box' }}
+              >
+                <option disabled value="">
+                  โปรดเลือก
+                </option>
+                <option value="ฉีดวัคซีน">ฉีดวัคซีน</option>
+                <option value="ตรวจร่างกายทั่วไป">ตรวจร่างกายทั่วไป</option>
+                <option value="ตรวจเลือด">ตรวจเลือด/x-ray</option>
+              </select>
+            </label>
+
+            <div style={{ marginTop: '10px' }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="เลือกวันและเวลาจองครั้งถัดไป"
+                  slotProps={{ textField: { size: 'big' } }}
+                  value={formData.datetimevalue}
+                  onChange={(newValue) => setFormData({ ...formData, datetimevalue: newValue })}
+                />
+              </LocalizationProvider>
+            </div>
+
+            {formData.appointmentType && formData.datetimevalue && (
+              <div style={{ marginTop: '20px' }}>
+                <label>
+                  เลือกช่วงเวลา
+                  <br />
+                  <select
+                    value={formData.timeBlock}
+                    onChange={handleTimeBlockChange}
+                    style={{ width: '50%', padding: '8px', boxSizing: 'border-box' }}
+                  >
+                    <option disabled value="">
+                      โปรดเลือก
+                    </option>
+                    {timeRange.map((time, index) => (
+                      <option key={index} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
+
     </div>
   );
 }
