@@ -50,6 +50,7 @@ const AuthResetPassword = () => {
       setMessage(response.data.message);
       setError('');
       setTimeout(() => navigate('/login'), 3000);
+
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred. Please try again.');
       setMessage('');

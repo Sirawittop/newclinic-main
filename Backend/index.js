@@ -319,13 +319,34 @@ app.put("/api/editpassword", async (req, res) => {
 
 app.post("/api/booking", async (req, res) => {
   const { name, phone, email, date, time, type } = req.body;
+
+  // Function to format date without time fractions
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+  // Function to format time without fractional seconds
+  function formatTime(timeString) {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString('th-TH', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
   try {
+    // Insert into the database
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type,status) VALUES (?, ?,  ?, ?, ? ,?,?)",
+      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [name, phone, email, date, time, type, 1]
     );
 
-    // Send confirmation email
+    // Email content
     const subject = "แจ้งคอนเฟิร์มการจองคิว";
     const text = `🏥 การยืนยันการจองคิวคลินิก 🏥
 
@@ -334,7 +355,7 @@ app.post("/api/booking", async (req, res) => {
 เรายินดีที่จะแจ้งให้ทราบว่าการจองของคุณได้รับการยืนยันเรียบร้อยแล้ว
 
 📅 วันที่: ${formatDate(date)}
-🕒 เวลา: ${time}
+🕒 เวลา: ${formatTime(time)}
 🩺 ประเภทการรักษา: ${type}
 
 ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
@@ -347,8 +368,11 @@ app.post("/api/booking", async (req, res) => {
 
 หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
 `;
+
+    // Send confirmation email
     sendEmail(email, subject, text);
 
+    // Respond with success message
     res.json({
       message: "Booking successful and confirmation email sent",
     });
@@ -360,6 +384,7 @@ app.post("/api/booking", async (req, res) => {
     });
   }
 });
+
 app.get("/api/delslottime", async (req, res) => {
   try {
     const [results] = await conn.query(
@@ -711,7 +736,6 @@ const updateStatusEveryMinute = async () => {
 
       // Format the date to 'YYYY-MM-DD'
       const formattedDate = oneDayAgo.toISOString().slice(0, 10);
-      console.log('formattedDate', formattedDate);
 
       // Perform the update query
       const [results] = await conn.query(
@@ -721,8 +745,6 @@ const updateStatusEveryMinute = async () => {
         [formattedDate]
       );
 
-      console.log('Scheduled task executed at', now);
-      console.log('Rows affected:', results.affectedRows);
     } catch (error) {
       console.log('Error in scheduled task:', error);
     }
