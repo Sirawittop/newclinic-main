@@ -6,6 +6,12 @@ import "react-calendar/dist/Calendar.css";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from "dayjs";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+import "dayjs/locale/th";
+import { TextField } from '@mui/material';
+
+
 
 import {
   getCurrentWeek,
@@ -67,6 +73,11 @@ export default function HomePageAdmin() {
     '18:30 - 19:00',
     '19:00 - 19:30'
   ];
+
+  dayjs.extend(buddhistEra);
+  dayjs.locale('th'); // Set locale to Thai
+
+
 
   useEffect(() => {
     let d = new Date();
@@ -139,6 +150,7 @@ export default function HomePageAdmin() {
       return 'ไม่พบข้อมูล';
     }
   };
+
 
   const formatTime = (time) => {
     if (!time) return '';
@@ -478,12 +490,23 @@ export default function HomePageAdmin() {
             </label>
 
             <div style={{ marginTop: '10px' }}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="th"
+                dateFormats={{ monthAndYear: 'MMMM BBBB' }}
+              >
                 <DatePicker
                   label="เลือกวันและเวลาจองครั้งถัดไป"
-                  slotProps={{ textField: { size: 'big' } }}
                   value={formData.datetimevalue}
                   onChange={(newValue) => setFormData({ ...formData, datetimevalue: newValue })}
+                  format="DD MMMM BBBB"
+                  formatDensity="spacious"
+                  slotProps={{
+                    textField: { fullWidth: true },
+                  }}
+                  slots={{
+                    textField: (params) => <TextField {...params} />,
+                  }}
                 />
               </LocalizationProvider>
             </div>
