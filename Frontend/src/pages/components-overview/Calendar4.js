@@ -130,21 +130,17 @@ const Calendar4 = () => {
         }
       });
 
-      setBookedSlots([
-        ...bookedSlots,
-        {
-          dataday: selectedDate.toLocaleDateString(),
-          time: formData.selectedTime.split(' - ')[0]
-        }
-      ]);
-
       alert('จองคิวสำเร็จ');
       setIsModalOpen(false);
+
+      // Refresh the page to reflect the updated booking slots
+      window.location.reload();
     } catch (error) {
       console.error(error);
       alert('เกิดข้อผิดพลาดในการจองคิว');
     }
   };
+
 
   const handleTimeRangeSelect = (timeRange) => {
     setFormData({ ...formData, selectedTime: timeRange });

@@ -351,6 +351,8 @@ export default function HomePageAdmin() {
                             style={{
                               marginLeft: '8px',
                               color: reservation.status === 2 ? '#ff4d4f' : '#1890ff',
+                              cursor: reservation.status === 2 || reservation.status === 3 ? 'not-allowed' : 'pointer',
+
                             }}
                             onClick={() => handleIconClick(reservation.id)}
                             disabled={reservation.status === 3 || reservation.status === 3}
@@ -367,7 +369,6 @@ export default function HomePageAdmin() {
                             icon={<DeleteOutlined />}
                             style={{
                               color: reservation.status === 2 || reservation.status === 3 ? '#d9d9d9' : '#ff4d4f',
-                              cursor: reservation.status === 2 || reservation.status === 3 ? 'not-allowed' : 'pointer',
                             }}
                             onClick={() => {
                               if (reservation.status !== 2 && reservation.status !== 3) {
@@ -426,6 +427,8 @@ export default function HomePageAdmin() {
               key="nextAppointment"
               type="primary"
               onClick={() => handleClickAddDatetime()}
+              disabled={reservationData?.find(res => res.id === reservationId)?.status === 2 || reservationData?.find(res => res.id === reservationId)?.status === 3}
+
             >
               นัดหมายครั้งถัดไป
             </Button>
@@ -438,6 +441,8 @@ export default function HomePageAdmin() {
                 type="primary"
                 onClick={handleModalOk}
                 style={{ marginLeft: '8px' }}
+                disabled={reservationData?.find(res => res.id === reservationId)?.status === 2 || reservationData?.find(res => res.id === reservationId)?.status === 3}
+
               >
                 บันทึก
               </Button>

@@ -12,7 +12,6 @@ import ProtectedRoute from './ProtectedRoute';
 const HomePageAdmin = Loadable(lazy(() => import('pages/admin/HomePageAdmin')));
 // render - sample page
 const Historybooking = Loadable(lazy(() => import('pages/components-overview/Historybooking')));
-const Booking = Loadable(lazy(() => import('pages/components-overview/Booking')));
 // render - utilities
 const BookingQueue = Loadable(lazy(() => import('pages/components-overview/BookingQueue')));
 const Editprofile = Loadable(lazy(() => import('layout/MainLayout/Header/HeaderContent/Profile/Editprofile.js')));
@@ -59,10 +58,6 @@ const MainRoutes = {
       element: <ProtectedRoute element={Historybooking} roles={1} /> // Admin only
 
     },
-    {
-      path: '/Booking',
-      element: <ProtectedRoute element={Booking} roles={2} /> // Admin only
-    }
   ]
 };
 

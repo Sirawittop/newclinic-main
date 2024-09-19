@@ -1,6 +1,5 @@
 // assets
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
@@ -25,13 +24,6 @@ const Dashboarduser = {
       icon: EditCalendarIcon,
       breadcrumbs: false
     },
-    {
-      id: 'booking',
-      title: 'การจอง',
-      type: 'item',
-      url: '/Booking',
-      icon: MeetingRoomIcon
-    }
 
 
 
