@@ -1,14 +1,46 @@
-// material-ui
-import { Box, Typography } from '@mui/material';
-
-// project import
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
-
-// ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
+import initializeMenuItems from 'menu-items';
 
 const Navigation = () => {
-  const navGroups = menuItem.items.map((item) => {
+  const [menuItems, setMenuItems] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const items = await initializeMenuItems();
+        setMenuItems(items);
+        setLoading(false);
+      } catch (err) {
+        console.error('Failed to fetch menu items:', err);
+        setError('Failed to load navigation items');
+        setLoading(false);
+      }
+    };
+
+    fetchMenuItems();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Typography variant="body1" color="error" align="center" sx={{ pt: 2 }}>
+        {error}
+      </Typography>
+    );
+  }
+
+  const navGroups = menuItems?.items?.map((item) => {
     switch (item.type) {
       case 'group':
         return <NavGroup key={item.id} item={item} />;

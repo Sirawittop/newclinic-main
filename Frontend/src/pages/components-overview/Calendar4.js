@@ -185,12 +185,35 @@ const Calendar4 = () => {
     handleChangeUserData(e, 'email');
   };
 
+  const formatDateee = (date) => {
+    console.log(date)
+    const year = date.getFullYear() + 543; // Convert to Buddhist Era
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthMap = {
+      '01': 'มกราคม',
+      '02': 'กุมภาพันธ์',
+      '03': 'มีนาคม',
+      '04': 'เมษายน',
+      '05': 'พฤษภาคม',
+      '06': 'มิถุนายน',
+      '07': 'กรกฎาคม',
+      '08': 'สิงหาคม',
+      '09': 'กันยายน',
+      '10': 'ตุลาคม',
+      '11': 'พฤศจิกายน',
+      '12': 'ธันวาคม'
+    };
+
+    return `${day} ${monthMap[month]} ${year}`; // Return Thai date format
+  };
+
   return (
     <div>
       <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
       {selectedDate && bookedSlots && (
         <div>
-          <p>วันที่จอง {selectedDate.toLocaleDateString()}</p>
+          <p style={{ color: 'red' }}>วันที่ {formatDateee(selectedDate)}</p>
           {typeof availableTimeRange === 'string' ? (
             <p>{availableTimeRange}</p>
           ) : (

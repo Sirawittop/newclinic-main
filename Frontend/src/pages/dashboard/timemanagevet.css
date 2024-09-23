@@ -167,3 +167,7 @@
 .time-range-label {
   margin-left: 5px;
 }
+
+.datepicker-month-label {
+  display: none;
+}

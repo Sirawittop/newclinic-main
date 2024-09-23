@@ -278,7 +278,7 @@ const TimeManageVet = () => {
                 })}
                 {selectedTimes.length > 0 && (
                   <button className="btn btn-primary" onClick={bookSlots}>
-                    บันทึกการจอง
+                    ลบช่วงเวลาที่เลือก
                   </button>
                 )}
               </div>

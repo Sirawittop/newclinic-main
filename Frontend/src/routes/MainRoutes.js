@@ -10,9 +10,7 @@ import ProtectedRoute from './ProtectedRoute';
 
 // render - dashboard
 const HomePageAdmin = Loadable(lazy(() => import('pages/admin/HomePageAdmin')));
-// render - sample page
 const Historybooking = Loadable(lazy(() => import('pages/components-overview/Historybooking')));
-// render - utilities
 const BookingQueue = Loadable(lazy(() => import('pages/components-overview/BookingQueue')));
 const Editprofile = Loadable(lazy(() => import('layout/MainLayout/Header/HeaderContent/Profile/Editprofile.js')));
 const Dashboarduser = Loadable(lazy(() => import('pages/dashboard/timemanagevet.js')));

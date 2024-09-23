@@ -29,8 +29,6 @@ const AuthLogin = () => {
 
   const navigate = useNavigate();
 
-
-
   return (
     <>
       <Formik

@@ -144,3 +144,7 @@
 .modal-container button {
   margin-top: 10px;
 }
+
+.datepicker-month-label {
+  display: none;
+}

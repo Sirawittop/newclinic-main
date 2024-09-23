@@ -7,6 +7,9 @@ import axios from 'axios';
 const TypographyPage = () => {
   const [reservedSlots, setReservedSlots] = useState([]);
 
+  // Define the default selected date as September 29, 2024
+  const defaultDate = new Date(2024, 8, 29); // 0-indexed months, so 8 represents September
+
   useEffect(() => {
     const fetchReservedSlots = async () => {
       try {
@@ -20,10 +23,30 @@ const TypographyPage = () => {
     fetchReservedSlots();
   }, []);
 
-  const timeSlots = {
-    // Time slot definitions...
+  // Function to format the date to Thai Buddhist Era and Thai language
+  const formatDate = (date) => {
+    const year = date.getFullYear() + 543; // Convert to Buddhist Era
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthMap = {
+      '01': 'มกราคม',
+      '02': 'กุมภาพันธ์',
+      '03': 'มีนาคม',
+      '04': 'เมษายน',
+      '05': 'พฤษภาคม',
+      '06': 'มิถุนายน',
+      '07': 'กรกฎาคม',
+      '08': 'สิงหาคม',
+      '09': 'กันยายน',
+      '10': 'ตุลาคม',
+      '11': 'พฤศจิกายน',
+      '12': 'ธันวาคม'
+    };
+
+    return `${day} ${monthMap[month]} ${year}`; // Return Thai date format
   };
 
+  // This useEffect handles translation of the calendar's days and months to Thai
   useEffect(() => {
     const dayMap = {
       'Mon': 'จันทร์',
@@ -95,7 +118,13 @@ const TypographyPage = () => {
         จองคิวรักษาสัตว์
       </MuiTypography>
       <div className="main-container">
-        <Calendar4 timeSlots={timeSlots} reservedSlots={reservedSlots} />
+        {/* Pass selectedDate to Calendar4 component */}
+        <Calendar4
+          timeSlots={[]} // Update this with your actual time slots
+          reservedSlots={reservedSlots}
+          formatDate={formatDate}
+          selectedDate={defaultDate} // Pass September 29, 2024 as the selected date
+        />
       </div>
     </Container>
   );

@@ -11,7 +11,7 @@ const getUserRole = async () => {
     return response.data.role;
   } catch (error) {
     console.error('Failed to fetch user role:', error);
-    return null; // Return null or some default value in case of error
+    return null;
   }
 };
 
@@ -29,6 +29,11 @@ const getMenuItems = async () => {
   return { items };
 };
 
-const menuItems = await getMenuItems();
+// Create a function to initialize menu items after login
+const initializeMenuItems = async () => {
+  const menuItems = await getMenuItems();
+  return menuItems;
+};
 
-export default menuItems;
+// Export the initialization function instead of the menu items directly
+export default initializeMenuItems;
