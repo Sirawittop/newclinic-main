@@ -4,9 +4,8 @@ import 'react-horizontal-strip-datepicker/dist/ReactHorizontalDatePicker.css';
 import './timemanagevet.css';
 import axios from 'axios';
 import Container from '@mui/material/Container';
-import MuiTypography from '@mui/material/Typography';
 
-const TimeManageVet = () => {  // Renamed to start with an uppercase letter
+const TimeManageVet = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimeRange, setAvailableTimeRange] = useState([]);
   const [bookedSlots, setBookedSlots] = useState([]);
@@ -39,22 +38,24 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
       'Sat': 'เสาร์',
       'Sun': 'อาทิตย์'
     };
+
     const monthMap = {
-      Jan: 'ม.ค.',
-      Feb: 'ก.พ.',
-      Mar: 'มี.ค.',
-      Apr: 'เม.ย.',
-      May: 'พ.ค.',
-      Jun: 'มิ.ย.',
-      Jul: 'ก.ค.',
-      Aug: 'ส.ค.',
-      Sep: 'ก.ย.',
-      Oct: 'ต.ค.',
-      Nov: 'พ.ย.',
-      Dec: 'ธ.ค.'
+      'Jan': 'ม.ค.',
+      'Feb': 'ก.พ.',
+      'Mar': 'มี.ค.',
+      'Apr': 'เม.ย.',
+      'May': 'พ.ค.',
+      'Jun': 'มิ.ย.',
+      'Jul': 'ก.ค.',
+      'Aug': 'ส.ค.',
+      'Sep': 'ก.ย.',
+      'Oct': 'ต.ค.',
+      'Nov': 'พ.ย.',
+      'Dec': 'ธ.ค.'
     };
 
     const translateNames = () => {
+      // Translate day names
       document.querySelectorAll('.datepicker-day-label').forEach(element => {
         const englishDay = element.textContent.trim();
         if (dayMap[englishDay]) {
@@ -62,6 +63,7 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
         }
       });
 
+      // Translate month abbreviations
       document.querySelectorAll('.scroll-head').forEach(element => {
         const englishMonth = element.textContent.trim();
         if (monthMap[englishMonth]) {
@@ -79,6 +81,7 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
       observer.observe(calendarContainer, { childList: true, subtree: true });
     }
 
+    // Initial translation on component mount
     translateNames();
 
     return () => {
@@ -123,11 +126,28 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
     setAvailableTimeRange(timeRange);
   };
 
+  // New formatDate function for Buddhist year and Thai months
   function formatDate(date) {
-    const year = date.getFullYear();
+    const year = date.getFullYear() + 543; // Convert to Buddhist Era
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const monthMap = {
+      '01': 'มกราคม',
+      '02': 'กุมภาพันธ์',
+      '03': 'มีนาคม',
+      '04': 'เมษายน',
+      '05': 'พฤษภาคม',
+      '06': 'มิถุนายน',
+      '07': 'กรกฎาคม',
+      '08': 'สิงหาคม',
+      '09': 'กันยายน',
+      '10': 'ตุลาคม',
+      '11': 'พฤศจิกายน',
+      '12': 'ธันวาคม'
+    };
+
+
+    return `${day} ${monthMap[month]} ${year}`; // Return Thai date format
   }
 
   const formatTime = (time) => {
@@ -157,11 +177,10 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
           day: '2-digit'
         });
         const startTime = timeRange.split(' - ')[0];
-        // ตรวจสอบว่า time range นี้ไม่ถูกจอง (ไม่ถูก disable)
         const isBooked = bookedSlots.some((slot) => {
           return slot.dataday === dateKey && slot.time === startTime;
         });
-        return !isBooked; // เลือกเฉพาะช่วงเวลาที่ไม่ถูกจอง
+        return !isBooked;
       });
 
       setSelectedTimes(availableTimes);
@@ -175,7 +194,7 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
       for (const timeRange of selectedTimes) {
         const data = {
           time: formatTime(timeRange),
-          date: formatDate(selectedDate),
+          date: formatDate(selectedDate), // Use the new formatDate
           status: 1
         };
         await axios.post('http://localhost:8000/api/booking', data, {
@@ -188,7 +207,7 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
       setBookedSlots([
         ...bookedSlots,
         ...selectedTimes.map((timeRange) => ({
-          dataday: selectedDate.toLocaleDateString(),
+          dataday: formatDate(selectedDate), // Use the new formatDate
           time: timeRange.split(' - ')[0]
         }))
       ]);
@@ -205,12 +224,16 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
 
   return (
     <Container maxWidth="md">
-      <MuiTypography variant="h3" align="center" gutterBottom></MuiTypography>
       <div className="main-container">
-        <ReactHorizontalDatePicker selectedDay={handleSelectedDay} enableScroll={true} enableDays={180} color={'#987876'} />
+        <ReactHorizontalDatePicker
+          selectedDay={handleSelectedDay}
+          enableScroll={true}
+          enableDays={180}
+          color={'#987876'}
+        />
         {selectedDate && bookedSlots && (
           <div>
-            <p>วันที่เลือก {selectedDate.toLocaleDateString()}</p>
+            <p style={{ color: 'red' }}>วันที่ {formatDate(selectedDate)}</p>
             {typeof availableTimeRange === 'string' ? (
               <p>{availableTimeRange}</p>
             ) : (
@@ -254,8 +277,8 @@ const TimeManageVet = () => {  // Renamed to start with an uppercase letter
                   );
                 })}
                 {selectedTimes.length > 0 && (
-                  <button onClick={bookSlots} style={{ margintop: '10px' }}>
-                    ลบคิวจอง
+                  <button className="btn btn-primary" onClick={bookSlots}>
+                    บันทึกการจอง
                   </button>
                 )}
               </div>
