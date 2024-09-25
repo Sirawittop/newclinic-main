@@ -84,20 +84,23 @@ const Calendar4 = () => {
       const currentHour = currentTime.getHours();
       const currentMinutes = currentTime.getMinutes();
 
-      // Filter out time slots that have already passed
-      timeRange = timeRange.filter((time) => {
-        const [startTime] = time.split(' - ');
-        const [startHour, startMinutes] = startTime.split(':').map(Number);
+      // Only attempt to filter if timeRange is an array
+      if (Array.isArray(timeRange)) {
+        timeRange = timeRange.filter((time) => {
+          const [startTime] = time.split(' - ');
+          const [startHour, startMinutes] = startTime.split(':').map(Number);
 
-        return (
-          startHour > currentHour ||
-          (startHour === currentHour && startMinutes >= currentMinutes)
-        );
-      });
+          return (
+            startHour > currentHour ||
+            (startHour === currentHour && startMinutes >= currentMinutes)
+          );
+        });
+      }
     }
 
     setAvailableTimeRange(timeRange);
   };
+
 
   function formatDate(date) {
     const year = date.getFullYear();
