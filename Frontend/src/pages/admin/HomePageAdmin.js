@@ -176,12 +176,16 @@ export default function HomePageAdmin() {
       setIsModalVisible(false);
 
       alert('รายละเอียดการรักษาได้ถูกบันทึกเรียบร้อยแล้ว');
+
+      // รีเฟรชหน้าเว็บหลังจากบันทึกเสร็จ
+      window.location.reload();
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);
 
       alert('ไม่สามารถบันทึกรายละเอียดการรักษาได้');
     }
   };
+
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
@@ -363,7 +367,7 @@ export default function HomePageAdmin() {
                             style={{
                               marginLeft: '8px',
                               color: reservation.status === 2 ? '#ff4d4f' : '#1890ff',
-                              cursor: reservation.status === 2 || reservation.status === 3 ? 'not-allowed' : 'pointer',
+                              cursor: reservation.status === 3 || reservation.status === 3 ? 'not-allowed' : 'pointer',
 
                             }}
                             onClick={() => handleIconClick(reservation.id)}
@@ -488,7 +492,38 @@ export default function HomePageAdmin() {
                 <option value="ตรวจเลือด">ตรวจเลือด/x-ray</option>
               </select>
             </label>
+            <br />
 
+            <label>
+              เลือกช่วงเวลา
+              <br />
+              <select id="timeSlot" name="timeSlot" defaultValue=""
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                required
+                style={{ width: '50%', padding: '8px', boxSizing: 'border-box' }}
+              >
+
+                <option value="" disabled>
+                  เลือกช่วงเวลา
+                </option>
+                <option value="12:00:00">12:00 - 12:30</option>
+                <option value="12:30:00">12:30 - 13:00</option>
+                <option value="13:00:00">13:00 - 13:30</option>
+                <option value="13:30:00">13:30 - 14:00</option>
+                <option value="14:00:00">14:00 - 14:30</option>
+                <option value="14:30:00">14:30 - 15:00</option>
+                <option value="15:00:00">15:00 - 15:30</option>
+                <option value="15:30:00">15:30 - 16:00</option>
+                <option value="16:00:00">16:00 - 16:30</option>
+                <option value="16:30:00">16:30 - 17:00</option>
+                <option value="17:00:00">17:00 - 17:30</option>
+                <option value="17:30:00">17:30 - 18:00</option>
+                <option value="18:00:00">18:00 - 18:30</option>
+                <option value="18:30:00">18:30 - 19:00</option>
+                <option value="19:00:00">19:00 - 19:30</option>
+              </select>
+            </label>
+            <br />
             <div style={{ marginTop: '10px' }}>
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}

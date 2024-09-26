@@ -800,3 +800,8 @@ app.delete("/api/vetcancelbooking/:id", async (req, res) => {
     });
   }
 });
+
+//สร้าง api  สำหรับ บันทึกเวลาและบัน
+
+
+// app.post("/api/vetbookuser", async (req, res) => {
