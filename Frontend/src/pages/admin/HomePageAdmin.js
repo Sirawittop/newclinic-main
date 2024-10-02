@@ -52,27 +52,9 @@ export default function HomePageAdmin() {
   const [showselected, setShowselected] = useState(false);
   const [formData, setFormData] = useState({
     appointmentType: '',
-    datetimevalue: null,
-    timeBlock: '',
+    date: '',
+    time: '',
   });
-
-  const timeRange = [
-    '12:00 - 12:30',
-    '12:30 - 13:00',
-    '13:00 - 13:30',
-    '13:30 - 14:00',
-    '14:00 - 14:30',
-    '14:30 - 15:00',
-    '15:00 - 15:30',
-    '15:30 - 16:00',
-    '16:00 - 16:30',
-    '16:30 - 17:00',
-    '17:00 - 17:30',
-    '17:30 - 18:00',
-    '18:00 - 18:30',
-    '18:30 - 19:00',
-    '19:00 - 19:30'
-  ];
 
   dayjs.extend(buddhistEra);
   dayjs.locale('th'); // Set locale to Thai
@@ -164,25 +146,50 @@ export default function HomePageAdmin() {
   };
 
   const handleModalOk = async () => {
-    try {
-      const payload = {
-        id: reservationId,
-        doctordescription: currentNote,
-      };
+    if (formData.appointmentType !== '' || formData.time !== '' || formData.datetimevalue !== null) {
+      try {
+        const payload = {
+          id: reservationId,
+          doctordescription: currentNote,
+          formData: formData
+        };
 
-      const response = await axios.post('http://localhost:8000/api/doctordescription', payload);
+        const response = await axios.post('http://localhost:8000/api/doctordescriptionandReservation', payload);
 
-      console.log(response.data.message);
-      setIsModalVisible(false);
+        console.log(response.data.message);
+        setIsModalVisible(false);
 
-      alert('รายละเอียดการรักษาได้ถูกบันทึกเรียบร้อยแล้ว');
+        alert('รายละเอียดการรักษาและการจองคิวถัดไปได้ถูกบันทึกเรียบร้อยแล้ว');
 
-      // รีเฟรชหน้าเว็บหลังจากบันทึกเสร็จ
-      window.location.reload();
-    } catch (error) {
-      console.error("Error:", error.response ? error.response.data : error.message);
+        // รีเฟรชหน้าเว็บหลังจากบันทึกเสร็จ
+        window.location.reload();
+      } catch (error) {
+        console.error("Error:", error.response ? error.response.data : error.message);
 
-      alert('ไม่สามารถบันทึกรายละเอียดการรักษาได้');
+        alert('ไม่สามารถบันทึกรายละเอียดการรักษาได้');
+      }
+
+    } else {
+      try {
+        const payload = {
+          id: reservationId,
+          doctordescription: currentNote,
+        };
+
+        const response = await axios.post('http://localhost:8000/api/doctordescription', payload);
+
+        console.log(response.data.message);
+        setIsModalVisible(false);
+
+        alert('รายละเอียดการรักษาได้ถูกบันทึกเรียบร้อยแล้ว');
+
+        // รีเฟรชหน้าเว็บหลังจากบันทึกเสร็จ
+        window.location.reload();
+      } catch (error) {
+        console.error("Error:", error.response ? error.response.data : error.message);
+
+        alert('ไม่สามารถบันทึกรายละเอียดการรักษาได้');
+      }
     }
   };
 
@@ -228,10 +235,6 @@ export default function HomePageAdmin() {
       setShowselected(true);
     }
   }
-
-  const handleTimeBlockChange = (e) => {
-    setFormData({ ...formData, timeBlock: e.target.value });
-  };
 
   return (
     <div style={{ width: "1150px" }}>
@@ -422,7 +425,6 @@ export default function HomePageAdmin() {
             )}
           </ReactCalendarContainer>
           <CalendarIconContainer>
-            {/* Additional icons or actions can be added here */}
           </CalendarIconContainer>
         </Bottom>
       </Calendar>
@@ -532,9 +534,9 @@ export default function HomePageAdmin() {
               >
                 <DatePicker
                   label="เลือกวันและเวลาจองครั้งถัดไป"
-                  value={formData.datetimevalue}
-                  onChange={(newValue) => setFormData({ ...formData, datetimevalue: newValue })}
-                  format="DD MMMM BBBB"
+                  value={formData.date}
+                  onChange={(newValue) => setFormData({ ...formData, date: newValue })}
+                  format="DD MMMM YYYY"
                   formatDensity="spacious"
                   slotProps={{
                     textField: { fullWidth: true },
@@ -546,28 +548,7 @@ export default function HomePageAdmin() {
               </LocalizationProvider>
             </div>
 
-            {formData.appointmentType && formData.datetimevalue && (
-              <div style={{ marginTop: '20px' }}>
-                <label>
-                  เลือกช่วงเวลา
-                  <br />
-                  <select
-                    value={formData.timeBlock}
-                    onChange={handleTimeBlockChange}
-                    style={{ width: '50%', padding: '8px', boxSizing: 'border-box' }}
-                  >
-                    <option disabled value="">
-                      โปรดเลือก
-                    </option>
-                    {timeRange.map((time, index) => (
-                      <option key={index} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            )}
+
           </div>
         )}
       </Modal>

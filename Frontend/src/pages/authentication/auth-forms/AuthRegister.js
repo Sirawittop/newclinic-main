@@ -112,9 +112,10 @@ const AuthRegister = () => {
                   />
                   {touched.numphone && errors.numphone && (
                     <FormHelperText error id="helper-text-numphone-signup">
-                      {errors.numphone}
+                      หมายเลขโทรศัพท์ไม่ควรเกิน 10 ตัวเลข
                     </FormHelperText>
                   )}
+
                 </Stack>
               </Grid>
 

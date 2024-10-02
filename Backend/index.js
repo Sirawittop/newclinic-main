@@ -347,7 +347,7 @@ app.post("/api/booking", async (req, res) => {
     );
 
     // Email content
-    const subject = "แจ้งคอนเฟิร์มการจองคิว";
+    const subject = "ยืนยันการจองคิว";
     const text = `🏥 การยืนยันการจองคิวคลินิก 🏥
 
 สวัสดีคุณ ${name} 👋
@@ -576,48 +576,7 @@ app.get("/api/userRole", async (req, res) => {
 });
 
 
-// app.post("/api/sentmail", async (req, res) => {
-//   const { name, email, date, time } = req.body;
-//   try {
-//     // Insert booking details into the database
-//     const [results] = await conn.query(
-//       "INSERT INTO reservationqueue (name, email, dataday, time) VALUES (?, ?, ?, ?)",
-//       [name, email, date, time]
-//     );
 
-//     // Prepare email content
-//     const subject = "แจ้งเตือนการจองคิว";
-//     const text = `🏥แจ้งเตือนการจองคิว🏥
-//         สวัสดีคุณ ${name} 👋
-
-// เรายินดีที่จะแจ้งให้ทราบว่าคุณได้จองคิวกับทางคลินิกไว้
-
-// รายละเอียด
-
-// 📅 วันที่: ${formatDate(date)}
-// 🕒 เวลา: ${time}
-
-// ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
-
-// หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
-// `;
-
-//     // Send confirmation email
-//     await sendEmail(email, subject, text);
-
-//     // Respond with success message
-//     res.json({
-//       message: "Booking successful and confirmation email sent",
-//     });
-//   } catch (error) {
-//     // Handle errors and respond with error message
-//     console.log("error", error);
-//     res.status(403).json({
-//       message: "Booking failed",
-//       error,
-//     });
-//   }
-// });
 
 
 
@@ -801,7 +760,88 @@ app.delete("/api/vetcancelbooking/:id", async (req, res) => {
   }
 });
 
-//สร้าง api  สำหรับ บันทึกเวลาและบัน
+app.post("/api/doctordescriptionandReservation", async (req, res) => {
+  const { id, doctordescription, formData } = req.body;
 
+  try {
+    // Update the reservationqueue with the doctor description
+    const [updateResult] = await conn.query(
+      `UPDATE reservationqueue SET status = 2, doctordescription = ? WHERE id = ?`,
+      [doctordescription, id]
+    );
 
-// app.post("/api/vetbookuser", async (req, res) => {
+    if (updateResult.affectedRows === 0) {
+      return res.status(404).json({ message: "Reservation not found" });
+    }
+
+    // Fetch the name, numphone, and email from reservationqueue
+    const [reservation] = await conn.query(
+      `SELECT name, numphone, email FROM reservationqueue WHERE id = ?`,
+      [id]
+    );
+
+    if (reservation.length === 0) {
+      return res.status(404).json({ message: "Reservation details not found" });
+    }
+
+    const { name, numphone, email } = reservation[0];
+
+    // Convert date and add one day
+    const date = new Date(formData.date);
+    date.setDate(date.getDate() + 1);
+    const formattedDate = date.toISOString().split('T')[0];
+
+    // Insert a new record into reservationqueue
+    const [insertResult] = await conn.query(
+      `INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [name, numphone, email, formattedDate, formData.time, formData.appointmentType, 1]
+    );
+
+    // Format email content
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }
+
+    function formatTime(timeString) {
+      const time = new Date(`1970-01-01T${timeString}`);
+      return time.toLocaleTimeString('th-TH', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+
+    // send email 
+    const subject = "แจ้งคอนเฟิร์มการจองคิว";
+    const text = `🏥 การยืนยันการจองคิวคลินิก 🏥
+ 
+    สวัสดีคุณ ${name} 👋
+ 
+    เรายินดีที่จะแจ้งให้ทราบว่าการจองของคุณได้รับการยืนยันเรียบร้อยแล้ว
+ 
+    📅 วันที่: ${formatDate(formattedDate)}
+    🕒 เวลา: ${formatTime(formData.time)}
+    🩺 ประเภทการรักษา: ${formData.appointmentType}
+ 
+    ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
+ 
+    🔔 ข้อควรจำ:
+    - หากต้องการยกเลิกคิวจอง กรุณากดยกเลิกในระบบก่อนเวลานัด 12 ชั่วโมง
+ 
+    🙏 ขอบคุณที่เลือกใช้บริการคลินิกของเรา`;
+
+    // Send confirmation email
+    sendEmail(email, subject, text);
+
+    res.json({ message: "Doctor description and reservation success" });
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Doctor description failed", error });
+  }
+});
