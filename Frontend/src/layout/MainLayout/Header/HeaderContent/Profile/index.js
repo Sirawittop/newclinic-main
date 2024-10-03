@@ -58,7 +58,7 @@ const Profile = () => {
     // get token from local storage
     const token = localStorage.getItem('token');
     axios
-      .get('http://localhost:8000/api/usertoken', {
+      .get('http://localhost:8002/api/usertoken', {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -47,7 +47,7 @@ const EditPassword = () => {
     const token = localStorage.getItem('token');
     try {
       await axios.put(
-        'http://localhost:8000/api/editpassword',
+        'http://localhost:8002/api/editpassword',
         {
           currentPassword: currentPassword,
           newPassword: newPassword

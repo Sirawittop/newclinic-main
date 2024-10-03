@@ -19,7 +19,7 @@ const EditProfile = () => {
 
     if (token) {
       axios
-        .get('http://localhost:8000/api/usertoken', {
+        .get('http://localhost:8002/api/usertoken', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -106,7 +106,7 @@ const EditProfile = () => {
       const token = localStorage.getItem('token');
       axios
         .put(
-          'http://localhost:8000/api/editprofile',
+          'http://localhost:8002/api/editprofile',
           {
             name: fullName,
             email: email,

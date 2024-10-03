@@ -9,6 +9,8 @@ const nodemailer = require("nodemailer");
 const app = express();
 const cron = require('node-cron');
 const crypto = require('crypto');
+const cronJob = require('node-cron');
+
 
 
 app.use(express.json());
@@ -64,7 +66,7 @@ const formatDate = (date) => {
   return `${day}/${month}/${year + 543}`;
 };
 
-const port = 8000;
+const port = 8002;
 const secret = "mysecret";
 
 let conn = null;
@@ -188,7 +190,7 @@ app.get("/api/users/:id", async (req, res) => {
 // Listen
 app.listen(port, async () => {
   await initMySQL();
-  console.log("Server started at port 8000");
+  console.log("Server started at port 8002");
 });
 
 // make api to get data from database
@@ -817,12 +819,12 @@ app.post("/api/doctordescriptionandReservation", async (req, res) => {
     }
 
     // send email 
-    const subject = "แจ้งคอนเฟิร์มการจองคิว";
-    const text = `🏥 การยืนยันการจองคิวคลินิก 🏥
+    const subject = "แจ้งวันนัดหมายคลินิก";
+    const text = `🏥 แจ้งวันนัดหมายคลินิก 🏥
  
     สวัสดีคุณ ${name} 👋
  
-    เรายินดีที่จะแจ้งให้ทราบว่าการจองของคุณได้รับการยืนยันเรียบร้อยแล้ว
+    เรายินดีที่จะแจ้งให้ทราบว่าคุณได้นัดหมายคิวครั้งถัดไปให้เรียบร้อยแล้ว
  
     📅 วันที่: ${formatDate(formattedDate)}
     🕒 เวลา: ${formatTime(formData.time)}
@@ -845,3 +847,70 @@ app.post("/api/doctordescriptionandReservation", async (req, res) => {
     res.status(500).json({ message: "Doctor description failed", error });
   }
 });
+
+const moment = require('moment');
+
+// Function to get appointments within the next 20 minutes
+const getUpcomingAppointments = async () => {
+  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss'); // Current time
+  const next20Minutes = moment().add(12, 'minutes').format('YYYY-MM-DD HH:mm:ss'); // 20 minutes ahead
+
+  const query = `
+    SELECT id, name, email, dataday, time, reservation_type 
+    FROM reservationqueue
+    WHERE CONCAT(dataday, ' ', time) BETWEEN ? AND ?
+  `;
+
+  // Use connection to fetch data from the database
+  const [rows] = await conn.execute(query, [currentTime, next20Minutes]);
+  return rows;
+};
+
+// Function to send reminder emails
+const sendReminderEmails = async () => {
+  try {
+    const appointments = await getUpcomingAppointments();
+
+    for (const appointment of appointments) {
+      const subject = "แจ้งเตือนวันนัดหมายคลินิก";
+      const text = `🏥 แจ้งเตือนวันนัดหมายคลินิก 🏥
+
+      สวัสดีคุณ ${appointment.name} 👋
+
+      เราขอแจ้งเตือนว่าวันนัดหมายของคุณกำลังจะมาถึง
+
+      📅 วันที่: ${moment(appointment.dataday).format('DD/MM/YYYY')}
+      🕒 เวลา: ${moment(appointment.time, 'HH:mm:ss').format('HH:mm')} น.
+      🩺 ประเภทการรักษา: ${appointment.reservation_type}
+
+      ⏰ โปรดมาถึงคลินิกก่อนเวลานัดหมาย 10 นาที
+
+      🔔 ข้อควรจำ:
+      - หากต้องการยกเลิกคิวจอง กรุณากดยกเลิกในระบบก่อนเวลานัด 12 ชั่วโมง
+
+      🙏 ขอบคุณที่เลือกใช้บริการคลินิกของเรา`;
+
+      try {
+        await new Promise((resolve, reject) => {
+          sendEmail(appointment.email, subject, text, (error, info) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(info);
+            }
+          });
+        });
+        console.log(`Reminder sent to ${appointment.email}`);
+      } catch (error) {
+        console.error(`Failed to send reminder to ${appointment.email}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error("Error sending reminder emails:", error);
+  }
+};
+
+// Set an interval to send reminders every minute
+setInterval(() => {
+  sendReminderEmails();
+}, 60000); // 60000 milliseconds = 1 minute

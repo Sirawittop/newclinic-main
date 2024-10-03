@@ -18,7 +18,7 @@ const Calendar4 = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios
-      .get('http://localhost:8000/api/usertoken', {
+      .get('http://localhost:8002/api/usertoken', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -29,7 +29,7 @@ const Calendar4 = () => {
 
     // Fetch booked slots from the backend
     axios
-      .get('http://localhost:8000/api/delslottime', {
+      .get('http://localhost:8002/api/delslottime', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -127,7 +127,7 @@ const Calendar4 = () => {
 
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:8000/api/booking', data, {
+      await axios.post('http://localhost:8002/api/booking', data, {
         headers: {
           Authorization: `Bearer ${token}`
         }

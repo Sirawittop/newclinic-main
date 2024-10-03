@@ -106,7 +106,7 @@ export default function HomePageAdmin() {
 
     const formattedDate = `${year}-${month}-${day}`;
 
-    axios.get(`http://localhost:8000/api/queuedoctor?targetDate=${formattedDate}`)
+    axios.get(`http://localhost:8002/api/queuedoctor?targetDate=${formattedDate}`)
       .then(response => {
         setReservationData(response.data.data);
       })
@@ -154,7 +154,7 @@ export default function HomePageAdmin() {
           formData: formData
         };
 
-        const response = await axios.post('http://localhost:8000/api/doctordescriptionandReservation', payload);
+        const response = await axios.post('http://localhost:8002/api/doctordescriptionandReservation', payload);
 
         console.log(response.data.message);
         setIsModalVisible(false);
@@ -176,7 +176,7 @@ export default function HomePageAdmin() {
           doctordescription: currentNote,
         };
 
-        const response = await axios.post('http://localhost:8000/api/doctordescription', payload);
+        const response = await axios.post('http://localhost:8002/api/doctordescription', payload);
 
         console.log(response.data.message);
         setIsModalVisible(false);
@@ -201,7 +201,7 @@ export default function HomePageAdmin() {
   const vetcancelBooking = async (bookingId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.delete(`http://localhost:8000/api/vetcancelbooking/${bookingId}`, {
+      const response = await axios.delete(`http://localhost:8002/api/vetcancelbooking/${bookingId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -538,6 +538,10 @@ export default function HomePageAdmin() {
                   onChange={(newValue) => setFormData({ ...formData, date: newValue })}
                   format="DD MMMM YYYY"
                   formatDensity="spacious"
+                  shouldDisableDate={(date) => {
+                    const day = date.day(); // day() คืนค่าเลขวันในสัปดาห์ (0 คืออาทิตย์, 3 คือพุธ)
+                    return day === 0 || day === 3; // ปิดการใช้งานวันอาทิตย์ (0) และวันพุธ (3)
+                  }}
                   slotProps={{
                     textField: { fullWidth: true },
                   }}
@@ -546,6 +550,7 @@ export default function HomePageAdmin() {
                   }}
                 />
               </LocalizationProvider>
+
             </div>
 
 

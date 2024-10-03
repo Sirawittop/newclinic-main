@@ -43,7 +43,7 @@ const AuthLogin = () => {
         })}
         onSubmit={async (values, { setErrors, setSubmitting }) => {
           try {
-            const response = await axios.post('http://localhost:8000/api/login', {
+            const response = await axios.post('http://localhost:8002/api/login', {
               email: values.email,
               password: values.password
             });

@@ -19,7 +19,7 @@ const Historybooking = () => {
           throw new Error('No token found in local storage');
         }
 
-        const response = await axios.get('http://localhost:8000/api/historybooking', {
+        const response = await axios.get('http://localhost:8002/api/historybooking', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -37,7 +37,7 @@ const Historybooking = () => {
   const cancelBooking = async (bookingId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.delete(`http://localhost:8000/api/cancelbooking/${bookingId}`, {
+      const response = await axios.delete(`http://localhost:8002/api/cancelbooking/${bookingId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

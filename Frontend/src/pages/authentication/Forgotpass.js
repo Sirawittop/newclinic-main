@@ -28,7 +28,7 @@ const AuthResetPassword = () => {
   const handleResetRequest = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/forgotpassword', { email });
+      const response = await axios.post('http://localhost:8002/api/forgotpassword', { email });
       setMessage(response.data.message);
       setError('');
     } catch (err) {
@@ -46,7 +46,7 @@ const AuthResetPassword = () => {
     }
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/reset-password', { token, newPassword: password });
+      const response = await axios.post('http://localhost:8002/api/reset-password', { token, newPassword: password });
       setMessage(response.data.message);
       setError('');
       setTimeout(() => navigate('/login'), 3000);

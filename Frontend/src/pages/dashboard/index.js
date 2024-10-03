@@ -11,7 +11,7 @@ const Index = () => {
     const fetchReservedSlots = async () => {
       try {
         axios
-          .get('http://localhost:8000/api/delslottime')
+          .get('http://localhost:8002/api/delslottime')
           .then((response) => {
             setReservedSlots(response.data.data);
           })

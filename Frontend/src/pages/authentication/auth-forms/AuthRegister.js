@@ -56,7 +56,7 @@ const AuthRegister = () => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             // Make POST request to your API endpoint
-            const response = await axios.post('http://localhost:8000/api/register', values);
+            const response = await axios.post('http://localhost:8002/api/register', values);
             // redirect to login page
             if (response.status === 201) {
               navigate('/login');

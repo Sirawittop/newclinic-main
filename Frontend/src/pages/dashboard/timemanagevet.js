@@ -15,7 +15,7 @@ const TimeManageVet = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios
-      .get('http://localhost:8000/api/delslottime', {
+      .get('http://localhost:8002/api/delslottime', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -197,7 +197,7 @@ const TimeManageVet = () => {
           date: formatDate(selectedDate), // Use the new formatDate
           status: 1
         };
-        await axios.post('http://localhost:8000/api/booking', data, {
+        await axios.post('http://localhost:8002/api/booking', data, {
           headers: {
             Authorization: `Bearer ${token}`
           }

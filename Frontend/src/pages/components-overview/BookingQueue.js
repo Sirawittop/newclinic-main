@@ -13,7 +13,7 @@ const TypographyPage = () => {
   useEffect(() => {
     const fetchReservedSlots = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/delslottime');
+        const response = await axios.get('http://localhost:8002/api/delslottime');
         setReservedSlots(response.data.data);
       } catch (error) {
         console.error('Error fetching reserved slots:', error);

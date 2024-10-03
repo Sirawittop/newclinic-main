@@ -5,7 +5,7 @@ import dashboarduser from './dashboarduser';
 // Function to get user role from backend
 const getUserRole = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/api/userRole', {
+    const response = await axios.get('http://localhost:8002/api/userRole', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
     return response.data.role;
