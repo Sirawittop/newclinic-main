@@ -428,7 +428,7 @@ app.get('/api/historybooking', async (req, res) => {
       `SELECT id, DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type, status, doctordescription
        FROM reservationqueue 
        WHERE email = ?
-       ORDER BY dataday DESC`,  // Sorting by dataday in descending order
+       ORDER BY id DESC`,  // Sorting by dataday in descending order
       [user.email]
     );
     res.json({
@@ -850,10 +850,13 @@ app.post("/api/doctordescriptionandReservation", async (req, res) => {
 
 const moment = require('moment');
 
-// Function to get appointments within the next 20 minutes
+// Array to keep track of sent reminders
+const sentReminders = new Set();
+
+// Function to get appointments within the next 24 hours
 const getUpcomingAppointments = async () => {
   const currentTime = moment().format('YYYY-MM-DD HH:mm:ss'); // Current time
-  const next20Minutes = moment().add(12, 'minutes').format('YYYY-MM-DD HH:mm:ss'); // 20 minutes ahead
+  const next24Hours = moment().add(24, 'hours').format('YYYY-MM-DD HH:mm:ss'); // 24 hours from now
 
   const query = `
     SELECT id, name, email, dataday, time, reservation_type 
@@ -862,7 +865,7 @@ const getUpcomingAppointments = async () => {
   `;
 
   // Use connection to fetch data from the database
-  const [rows] = await conn.execute(query, [currentTime, next20Minutes]);
+  const [rows] = await conn.execute(query, [currentTime, next24Hours]);
   return rows;
 };
 
@@ -872,7 +875,14 @@ const sendReminderEmails = async () => {
     const appointments = await getUpcomingAppointments();
 
     for (const appointment of appointments) {
-      const subject = "แจ้งเตือนวันนัดหมายคลินิก";
+      const appointmentKey = `${appointment.dataday} ${appointment.time}`;
+
+      // Check if the reminder has already been sent for this appointment
+      if (sentReminders.has(appointmentKey)) {
+        continue; // Skip if already notified
+      }
+
+      const subject = "แจ้งเตือนล่วงหน้าวันนัดหมายคลินิก";
       const text = `🏥 แจ้งเตือนวันนัดหมายคลินิก 🏥
 
       สวัสดีคุณ ${appointment.name} 👋
@@ -901,6 +911,8 @@ const sendReminderEmails = async () => {
           });
         });
         console.log(`Reminder sent to ${appointment.email}`);
+        // Mark this appointment as notified
+        sentReminders.add(appointmentKey);
       } catch (error) {
         console.error(`Failed to send reminder to ${appointment.email}:`, error);
       }
@@ -910,7 +922,8 @@ const sendReminderEmails = async () => {
   }
 };
 
-// Set an interval to send reminders every minute
+// Set an interval to send reminders every hour
 setInterval(() => {
   sendReminderEmails();
-}, 60000); // 60000 milliseconds = 1 minute
+}, 3600000); // 3600000 milliseconds = 1 hour
+
