@@ -76,7 +76,7 @@ const Historybooking = () => {
     const isBookingCancelable = isCancelable(booking.date, booking.time);
 
     if (!isBookingCancelable) {
-      alert('ไม่สามารถยกเลิกได้ เนื่องจากเหลือน้อยกว่า 12 ชั่วโมงก่อนถึงเวลาที่จอง');
+      alert('ไม่สามารถยกเลิกได้ เนื่องจากเหลือน้อยกว่า 4 ชั่วโมงก่อนถึงเวลาที่จอง');
       return;
     }
 
@@ -103,7 +103,7 @@ const Historybooking = () => {
   const isCancelable = (bookingDate, bookingTime) => {
     const bookingDateTime = moment(`${bookingDate} ${bookingTime}`, 'YYYY-MM-DD HH:mm:ss');
     const now = moment();
-    return bookingDateTime.diff(now, 'hours') >= 12;
+    return bookingDateTime.diff(now, 'hours') >= 4;
   };
 
   return (
