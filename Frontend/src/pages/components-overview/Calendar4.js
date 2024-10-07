@@ -133,7 +133,7 @@ const Calendar4 = () => {
         }
       });
 
-      alert('จองคิวสำเร็จ รับข้อข้อความยืนยันในอีเมล');
+      alert('จองคิวสำเร็จ โปรดอ่านรายละเอียดการจองในอีเมล');
       setIsModalOpen(false);
 
       // Refresh the page to reflect the updated booking slots
