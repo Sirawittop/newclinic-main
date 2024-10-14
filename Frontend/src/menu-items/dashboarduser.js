@@ -18,7 +18,7 @@ const Dashboarduser = {
     },
     {
       id: 'dashboarduser',
-      title: 'ลบช่วงเวลาที่หมอไม่ว่าง',
+      title: 'ลบช่วงเวลาที่ไม่ว่าง',
       type: 'item',
       url: '/timemanagevet',
       icon: EditCalendarIcon,
