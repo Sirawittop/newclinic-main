@@ -932,3 +932,26 @@ setInterval(() => {
 }, 7200000); // 7200000 milliseconds = 2 hours
 
 
+// post api for profilepet
+app.post("/api/profilepet", async (req, res) => {
+  const { name, typepet, birthday, weight } = req.body; // Fixed 'weitht' to 'weight'
+
+  try {
+    const [result] = await conn.query(
+      "INSERT INTO profilepet (name, typepet, birthday, weight) VALUES (?, ?, ?, ?)",
+      [name, typepet, birthday, weight]
+    );
+
+    // Respond with a success message
+    res.status(201).json({
+      message: "Profile pet created successfully",
+      data: result, // Optionally return the result of the insert
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(403).json({
+      message: "Booking failed",
+      error,
+    });
+  }
+});

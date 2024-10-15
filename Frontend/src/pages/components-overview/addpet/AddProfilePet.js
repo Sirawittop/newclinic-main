@@ -16,6 +16,12 @@ const convertToChristianEra = (date) => {
     return date ? dayjs(date).year(dayjs(date).year() - 543) : null;
 };
 
+
+
+
+
+
+
 function AddProfilePet() {
     const [showForm, setShowForm] = useState(false);
     const [petName, setPetName] = useState('');
@@ -31,7 +37,6 @@ function AddProfilePet() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log({ petName, petType, petWeight, petAge });
     };
 
     return (
