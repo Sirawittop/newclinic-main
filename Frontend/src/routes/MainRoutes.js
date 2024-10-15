@@ -5,7 +5,7 @@ import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import Editpassword from 'layout/MainLayout/Header/HeaderContent/Profile/Editpassword';
 import ProtectedRoute from './ProtectedRoute';
-import Addprofilepet from 'pages/components-overview/Addprofilepet';
+
 
 
 // render - dashboard
@@ -56,10 +56,6 @@ const MainRoutes = {
       element: <ProtectedRoute element={Historybooking} roles={1} /> // Admin only
 
     },
-    {
-      path: '/ProfilePet',
-      element: <ProtectedRoute element={Addprofilepet} roles={1} /> // Admin only
-    }
   ]
 };
 
