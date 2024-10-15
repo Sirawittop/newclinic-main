@@ -7,20 +7,17 @@ import dayjs from 'dayjs'; // Import dayjs for date management
 import 'dayjs/locale/th'; // Import Thai locale from Day.js
 import TextField from '@mui/material/TextField'; // Import TextField from Material-UI
 import ClearIcon from '@mui/icons-material/Clear'; // Import ClearIcon
+import axios from 'axios'; // Import axios for making API requests
 
+// Function to format the date to Buddhist Era
 const formatToBuddhistEra = (date) => {
     return date ? dayjs(date).year(dayjs(date).year() + 543).format('DD/MM/YYYY') : '';
 };
 
+// Function to convert the date to Christian Era
 const convertToChristianEra = (date) => {
     return date ? dayjs(date).year(dayjs(date).year() - 543) : null;
 };
-
-
-
-
-
-
 
 function AddProfilePet() {
     const [showForm, setShowForm] = useState(false);
@@ -29,14 +26,36 @@ function AddProfilePet() {
     const [petWeight, setPetWeight] = useState('');
     const [petAge, setPetAge] = useState(dayjs());
 
-    dayjs.locale('th');
+    dayjs.locale('th'); // Set the locale for dayjs
 
     const toggleForm = () => {
         setShowForm(!showForm);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+
+        // Prepare data to send
+        const data = {
+            name: petName,
+            typepet: petType,
+            birthday: convertToChristianEra(petAge).format('YYYY-MM-DD'), // Format date to YYYY-MM-DD for the database
+            weight: petWeight,
+        };
+
+        try {
+            // Make a POST request to your backend API
+            const response = await axios.post('http://localhost:8002/api/profilepet', data); // Ensure this URL is correct
+            console.log(response.data);
+
+            // Reset form state after successful submission
+            setPetName('');
+            setPetType('');
+            setPetWeight('');
+            setPetAge(dayjs());
+        } catch (error) {
+            console.error("There was an error creating the profile pet!", error.response?.data || error.message);
+        }
     };
 
     return (
@@ -63,6 +82,7 @@ function AddProfilePet() {
                                     name="petType"
                                     value={petType}
                                     onChange={(e) => setPetType(e.target.value)}
+                                    required
                                 >
                                     <option value="">เลือกประเภท</option>
                                     <option value="สุนัข">สุนัข</option>
@@ -103,20 +123,20 @@ function AddProfilePet() {
                                         label="เลือกวันเกิด"
                                         value={petAge}
                                         onChange={(newValue) => {
-                                            setPetAge(convertToChristianEra(newValue));
+                                            if (newValue) setPetAge(newValue);
                                         }}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
                                                 helperText={null}
                                                 value={formatToBuddhistEra(petAge)}
-                                                onChange={() => { }}
+                                                onChange={() => { }} // Prevent uncontrolled input error
                                             />
                                         )}
                                     />
                                 </LocalizationProvider>
                             </div>
-                            {/* Separate button to submit the form */}
+                            {/* Submit button */}
                             <button type="submit" className="submit-button">เพิ่มสัตว์เลี้ยง</button>
                         </form>
                     </div>
