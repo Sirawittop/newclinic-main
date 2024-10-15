@@ -455,7 +455,7 @@ app.post("/api/forgotpassword", async (req, res) => {
     );
 
     if (results.length === 0) {
-      return res.status(400).send({ message: "Email not found" });
+      return res.status(400).send({ message: "ส่งอีเมลผิดพลาด ไม่พบอีเมลนี้ในระบบ" });
     }
 
     // Generate a unique token
@@ -487,12 +487,12 @@ app.post("/api/forgotpassword", async (req, res) => {
     await sendEmail(email, subject, text);
 
     res.json({
-      message: "Email sent successfully",
+      message: "ส่งอีเมลสำเร็จ",
     });
   } catch (error) {
     console.log("error", error);
     res.status(500).json({
-      message: "Email sent failed",
+      message: "ส่งอีเมลผิดพลาด ไม่พบอีเมลนี้ในระบบ",
       error: error.message,
     });
   }
@@ -860,7 +860,7 @@ const sentReminders = new Set();
 // Function to get appointments within the next 24 hours
 const getUpcomingAppointments = async () => {
   const currentTime = moment().format('YYYY-MM-DD HH:mm:ss'); // Current time
-  const next24Hours = moment().add(6, 'hours').format('YYYY-MM-DD HH:mm:ss'); // 24 hours from now
+  const next24Hours = moment().add(5, 'hours').format('YYYY-MM-DD HH:mm:ss'); // 24 hours from now
 
   const query = `
     SELECT id, name, email, dataday, time, reservation_type 
