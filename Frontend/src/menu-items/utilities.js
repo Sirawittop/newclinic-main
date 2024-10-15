@@ -25,6 +25,13 @@ const utilities = {
       url: '/Historybooking',
       icon: HistoryIcon
     },
+    {
+      id: 'add-profile-pet',
+      title: 'เพิ่มข้อมูลสัตว์เลี้ยง',
+      type: 'item',
+      url: '/AddProfilePet',
+      icon: PetsIcon
+    }
 
   ]
 };

@@ -14,7 +14,7 @@ const Historybooking = Loadable(lazy(() => import('pages/components-overview/His
 const BookingQueue = Loadable(lazy(() => import('pages/components-overview/BookingQueue')));
 const Editprofile = Loadable(lazy(() => import('layout/MainLayout/Header/HeaderContent/Profile/Editprofile.js')));
 const Dashboarduser = Loadable(lazy(() => import('pages/dashboard/timemanagevet.js')));
-
+const AddProfilePet = Loadable(lazy(() => import('pages/components-overview/addpet/AddProfilePet.js')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 
@@ -56,6 +56,10 @@ const MainRoutes = {
       element: <ProtectedRoute element={Historybooking} roles={1} /> // Admin only
 
     },
+    {
+      path: '/AddProfilePet',
+      element: <ProtectedRoute element={AddProfilePet} roles={1} /> // Admin only
+    }
   ]
 };
 
