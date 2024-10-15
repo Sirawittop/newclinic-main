@@ -1,7 +1,7 @@
 
 import PetsIcon from '@mui/icons-material/Pets';
 import HistoryIcon from '@mui/icons-material/History';
-
+import AddToQueueIcon from '@mui/icons-material/AddToQueue';
 
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
 
@@ -16,7 +16,7 @@ const utilities = {
       type: 'item',
 
       url: '/BookingQueue',
-      icon: PetsIcon
+      icon: AddToQueueIcon
     },
     {
       id: 'history-booking',
