@@ -975,3 +975,32 @@ app.get("/api/Profilepet", async (req, res) => {
     });
   }
 });
+
+app.put("/api/profilepet/weight/:id", async (req, res) => {
+  const { id } = req.params;
+  const { weight } = req.body; // รับค่า weight จาก body
+
+
+  try {
+    const [result] = await conn.query(
+      "UPDATE profilepet SET weight = ? WHERE id = ?",
+      [weight, id]
+    );
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({
+        message: "Weight updated successfully",
+      });
+    } else {
+      res.status(404).json({
+        message: "Profile pet not found",
+      });
+    }
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({
+      message: "Error updating weight",
+      error,
+    });
+  }
+});

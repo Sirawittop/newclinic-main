@@ -88,9 +88,10 @@ function AddProfilePet() {
         console.log("Updated Data:", updatedData); // Log the data to be sent
 
         try {
-            await axios.put(`http://localhost:8002/api/profilepet/${selectedPet.id}`, updatedData);
+            await axios.put(`http://localhost:8002/api/profilepet/weight/${selectedPet.id}`, updatedData);
             fetchPetProfiles();
             setEditPopup(false);
+            window.location.reload(); // Reload the page to reflect the changes
         } catch (error) {
             setError("Error updating weight, please try again.");
             console.error("Error details:", error.response?.data || error.message); // Log detailed error information
