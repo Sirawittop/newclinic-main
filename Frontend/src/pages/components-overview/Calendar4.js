@@ -12,13 +12,15 @@ const Calendar4 = () => {
   const [userData, setUserData] = useState([{ name: '' }]);
   const [availableTimeRange, setAvailableTimeRange] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [petName, setPetName] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     appointmentType: '',
     selectedTime: '',
-    symptoms: '' // Add symptoms field
+    symptoms: '',// Add symptoms field
+    petName: ''
   });
   const [bookedSlots, setBookedSlots] = useState([]);
 
@@ -114,6 +116,10 @@ const Calendar4 = () => {
     setAvailableTimeRange(timeRange);
   };
 
+  const handlePetNameChange = (e) => {
+    setFormData({ ...formData, petName: e.target.value });
+  };
+
   function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -135,8 +141,10 @@ const Calendar4 = () => {
       type: formData.appointmentType,
       time: formatTime(formData.selectedTime),
       date: formatDate(selectedDate),
-      symptoms: formData.symptom // Include symptoms in the data sent to the backend
+      symptoms: formData.symptom,// Include symptoms in the data sent to the backend
+      petName: formData.petName
     };
+
 
 
     const token = localStorage.getItem('token');
@@ -158,6 +166,10 @@ const Calendar4 = () => {
 
   const handleTimeRangeSelect = (timeRange) => {
     setFormData({ ...formData, selectedTime: timeRange });
+    axios.get('http://localhost:8002/api/namepet').then((response) => {
+      setPetName(response.data.data);
+    }
+    );
     setIsModalOpen(true);
   };
 
@@ -292,6 +304,22 @@ const Calendar4 = () => {
                 <input type="email" value={userData[0]?.email || ''} onChange={handleEmailChange} readOnly required />
               </label>
               <br />
+              <br />
+              <div>
+                <label>
+                  ชื่อสัตว์ที่เข้ารับการรักษา
+                  <br />
+                  <select value={formData.petName || ''} onChange={handlePetNameChange} required>
+                    <option value="" disabled>เลือกสัตว์ที่ต้องการเข้ารักษา</option>
+                    {petName &&
+                      petName.map((name) => (
+                        <option key={name.id} value={name.name}>
+                          {name.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              </div>
               <label>
                 ประเภทการจอง
                 <br />
@@ -316,7 +344,6 @@ const Calendar4 = () => {
                   type="text"
                   value={formData.symptom}
                   onChange={(e) => setFormData({ ...formData, symptom: e.target.value })}
-
                 />
               </label>
               <br />

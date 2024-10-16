@@ -107,23 +107,24 @@ label {
 
 /* Submit button styles */
 .submit-button {
-    font-size: 13px;
-    /* Font size for submit button */
-    padding: 12px 24px;
-    /* Padding for submit button */
+    font-size: 11px;
+    /* ลดขนาดฟอนต์ลง */
+    padding: 8px 16px;
+    /* ลด padding สำหรับปุ่ม */
     background-color: #fa0303;
-    /* Red background */
+    /* สีพื้นหลังสีแดง */
     color: white;
-    /* White text */
+    /* ตัวอักษรสีขาว */
     border: none;
-    /* No border */
+    /* ไม่มีขอบ */
     border-radius: 4px;
-    /* Rounded corners */
+    /* มุมโค้ง */
     cursor: pointer;
-    /* Pointer cursor */
+    /* รูปแบบของเคอร์เซอร์ */
     transition: background-color 0.3s;
-    /* Smooth transition */
+    /* การเปลี่ยนแปลงที่ราบรื่น */
 }
+
 
 .submit-button:hover {
     background-color: #d00202;

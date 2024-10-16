@@ -320,7 +320,7 @@ app.put("/api/editpassword", async (req, res) => {
 
 
 app.post("/api/booking", async (req, res) => {
-  const { name, phone, email, date, time, type, symptoms } = req.body;
+  const { name, phone, email, date, time, type, symptoms, petName } = req.body;
 
   // Function to format date without time fractions
   function formatDate(dateString) {
@@ -342,12 +342,11 @@ app.post("/api/booking", async (req, res) => {
   }
 
 
-
   try {
     // Insert into the database
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type, status,symptom) VALUES (?, ?, ?, ?, ?, ?, ?,?)",
-      [name, phone, email, date, time, type, 1, symptoms]
+      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type, status,symptom, namepet) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)",
+      [name, phone, email, date, time, type, 1, symptoms, petName]
     );
 
     // Email content
@@ -1000,6 +999,23 @@ app.put("/api/profilepet/weight/:id", async (req, res) => {
     console.log("error", error);
     res.status(500).json({
       message: "Error updating weight",
+      error,
+    });
+  }
+});
+
+
+app.get("/api/namepet", async (req, res) => {
+  try {
+    const [results] = await conn.query("SELECT name FROM profilepet");
+    res.json({
+      message: "Search profile pet success",
+      data: results,
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(403).json({
+      message: "Search profile pet failed",
       error,
     });
   }
