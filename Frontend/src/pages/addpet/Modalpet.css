@@ -38,75 +38,66 @@
     /* Pointer cursor for interaction */
 }
 
-/* Button hover effect */
 .close-button:hover {
     color: red;
+    /* Change color on hover */
 }
 
 /* Form input styles */
 input[type="text"],
 input[type="number"] {
     width: 100%;
+    /* Full width of input */
     padding: 10px;
+    /* Padding for inputs */
     margin: 10px 0;
+    /* Margin for spacing */
     border: 1px solid #ccc;
+    /* Light border */
     border-radius: 4px;
+    /* Rounded corners */
     box-sizing: border-box;
+    /* Include padding in width calculation */
     font-size: 16px;
+    /* Font size for inputs */
 }
 
 /* Label styles */
 label {
     display: block;
+    /* Block display for labels */
     margin: 10px 0 5px;
+    /* Margin for spacing */
     font-size: 14px;
+    /* Font size for labels */
     font-weight: bold;
+    /* Bold font for labels */
 }
 
-/* Button styles */
-
-
-/* Button hover effect */
-
-
+/* Date picker styles */
 .date-picker {
     margin-bottom: 20px;
     /* Add spacing below the date picker */
 }
 
-.toggle-form-button {
-    /* ปรับขนาด, สี และลักษณะของปุ่มซ่อน/แสดงฟอร์ม */
-    font-size: 16px;
-    padding: 10px 20px;
-    color: black;
-}
-
-.submit-button {
-    /* ปรับขนาด, สี และลักษณะของปุ่มเพิ่มสัตว์เลี้ยง */
-    font-size: 13px;
-    padding: 12px 24px;
-    background-color: #fa0303;
-    /* สีเขียว */
-
-}
-
-.container1 {
-    display: flex;
-    justify-content: center;
-    /* Center the button horizontally */
-    margin: 20px;
-    /* Add some margin */
-}
-
+/* Toggle form button styles */
 .toggle-form-button {
     background-color: #4CAF50;
     /* Green */
     color: white;
+    /* White text */
     padding: 10px 20px;
+    /* Padding for button */
     border: none;
+    /* No border */
     border-radius: 5px;
+    /* Rounded corners */
     cursor: pointer;
+    /* Pointer cursor */
     font-size: 16px;
+    /* Font size for button */
+    transition: background-color 0.3s;
+    /* Smooth transition */
 }
 
 .toggle-form-button:hover {
@@ -114,15 +105,47 @@ label {
     /* Darker green on hover */
 }
 
+/* Submit button styles */
+.submit-button {
+    font-size: 13px;
+    /* Font size for submit button */
+    padding: 12px 24px;
+    /* Padding for submit button */
+    background-color: #fa0303;
+    /* Red background */
+    color: white;
+    /* White text */
+    border: none;
+    /* No border */
+    border-radius: 4px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Pointer cursor */
+    transition: background-color 0.3s;
+    /* Smooth transition */
+}
+
+.submit-button:hover {
+    background-color: #d00202;
+    /* Darker red on hover */
+}
+
+/* Pet profiles styles */
 .pet-profiles {
     margin: 20px;
+    /* Margin around the pet profiles */
     font-family: 'Arial', sans-serif;
     /* Use a clean font */
 }
 
+/* Styled table */
 .styled-table {
     border-collapse: collapse;
+    /* Ensure borders are collapsed */
     width: 100%;
+    /* Full width of the parent */
+    margin: 20px 0;
+    /* Margin around the table */
     border: 1px solid #ddd;
     /* Light border around the table */
     border-radius: 10px;
@@ -133,10 +156,12 @@ label {
 
 .styled-table th,
 .styled-table td {
+    border: 1px solid #ddd;
+    /* Add border to cells */
     padding: 12px 15px;
-    /* Padding for cells */
+    /* Padding for better spacing */
     text-align: left;
-    /* Left-align text */
+    /* Align text to the left */
 }
 
 .styled-table thead {
@@ -149,14 +174,4 @@ label {
 .styled-table tbody tr {
     border-bottom: 1px solid #ddd;
     /* Bottom border for rows */
-}
-
-.styled-table tbody tr:hover {
-    background-color: #f1f1f1;
-    /* Highlight row on hover */
-}
-
-.styled-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-    /* Zebra striping for even rows */
 }
