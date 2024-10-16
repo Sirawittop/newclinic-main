@@ -34,6 +34,8 @@ const Historybooking = () => {
     fetchBookings();
   }, []);
 
+  console.log(selectedBooking);
+
   const cancelBooking = async (bookingId) => {
     try {
       const token = localStorage.getItem('token');
@@ -166,7 +168,7 @@ const Historybooking = () => {
             <p>จองคิวรักษาอะไร: {selectedBooking.reservation_type}</p>
             <p>สถานะดำเนินการ: {formatstatus(selectedBooking.status)}</p>
             <p>รายละเอียดการเข้ารับการรักษา: {selectedBooking.doctordescription}</p>
-            {/* Add more details as needed */}
+            <p>อาการ: {selectedBooking.symptom}</p>
           </div>
         )}
       </Modal>

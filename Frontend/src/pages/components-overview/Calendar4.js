@@ -12,7 +12,14 @@ const Calendar4 = () => {
   const [userData, setUserData] = useState([{ name: '' }]);
   const [availableTimeRange, setAvailableTimeRange] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', phone: '', email: '', appointmentType: '', selectedTime: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    appointmentType: '',
+    selectedTime: '',
+    symptoms: '' // Add symptoms field
+  });
   const [bookedSlots, setBookedSlots] = useState([]);
 
   useEffect(() => {
@@ -43,8 +50,17 @@ const Calendar4 = () => {
   }, []);
 
   const handleSelectedDay = (date) => {
-    setSelectedDate(date);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const maxDate = new Date(currentDate);
+    maxDate.setDate(currentDate.getDate() + 14);
 
+    if (date > maxDate || date < currentDate) {
+      alert('คุณสามารถจองได้เฉพาะในช่วง 14 วันถัดไป');
+      return;
+    }
+
+    setSelectedDate(date);
     let timeRange = [];
     switch (date.getDay()) {
       case 0: // Sunday
@@ -72,24 +88,21 @@ const Calendar4 = () => {
         break;
     }
 
-    // Get the current time
     const currentTime = new Date();
+    const timeTwoHoursLater = new Date(currentTime.getTime() + 2 * 60 * 60 * 1000);
 
-    // If the selected date is today, filter out past time slots
     if (
       date.getDate() === currentTime.getDate() &&
       date.getMonth() === currentTime.getMonth() &&
       date.getFullYear() === currentTime.getFullYear()
     ) {
-      const currentHour = currentTime.getHours();
-      const currentMinutes = currentTime.getMinutes();
+      const currentHour = timeTwoHoursLater.getHours();
+      const currentMinutes = timeTwoHoursLater.getMinutes();
 
-      // Only attempt to filter if timeRange is an array
       if (Array.isArray(timeRange)) {
         timeRange = timeRange.filter((time) => {
           const [startTime] = time.split(' - ');
           const [startHour, startMinutes] = startTime.split(':').map(Number);
-
           return (
             startHour > currentHour ||
             (startHour === currentHour && startMinutes >= currentMinutes)
@@ -101,7 +114,6 @@ const Calendar4 = () => {
     setAvailableTimeRange(timeRange);
   };
 
-
   function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -111,8 +123,8 @@ const Calendar4 = () => {
 
   const formatTime = (time) => {
     const [startTime] = time.split(' - ');
-    const [hour] = startTime.split('.'); // Split the time string by '.'
-    return `${hour.padStart(2, '0')}:00`; // Pad the hour with leading zero if needed and append ':00:00'
+    const [hour] = startTime.split('.');
+    return `${hour.padStart(2, '0')}:00`;
   };
 
   const acceptqueue = async () => {
@@ -123,7 +135,9 @@ const Calendar4 = () => {
       type: formData.appointmentType,
       time: formatTime(formData.selectedTime),
       date: formatDate(selectedDate),
+      symptoms: formData.symptom // Include symptoms in the data sent to the backend
     };
+
 
     const token = localStorage.getItem('token');
     try {
@@ -135,15 +149,12 @@ const Calendar4 = () => {
 
       alert('จองคิวสำเร็จ โปรดอ่านรายละเอียดการจองในอีเมล');
       setIsModalOpen(false);
-
-      // Refresh the page to reflect the updated booking slots
       window.location.reload();
     } catch (error) {
       console.error(error);
       alert('เกิดข้อผิดพลาดในการจองคิว');
     }
   };
-
 
   const handleTimeRangeSelect = (timeRange) => {
     setFormData({ ...formData, selectedTime: timeRange });
@@ -166,7 +177,7 @@ const Calendar4 = () => {
   };
 
   const handleClose = () => {
-    setFormData({});
+    setFormData({ name: '', phone: '', email: '', appointmentType: '', selectedTime: '', symptom: '' }); // Reset the form data
     setIsModalOpen(false);
   };
 
@@ -189,8 +200,8 @@ const Calendar4 = () => {
   };
 
   const formatDateee = (date) => {
-    console.log(date)
-    const year = date.getFullYear() + 543; // Convert to Buddhist Era
+    console.log(date);
+    const year = date.getFullYear() + 543;
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const monthMap = {
@@ -208,7 +219,7 @@ const Calendar4 = () => {
       '12': 'ธันวาคม'
     };
 
-    return `${day} ${monthMap[month]} ${year}`; // Return Thai date format
+    return `${day} ${monthMap[month]} ${year}`;
   };
 
   return (
@@ -228,7 +239,7 @@ const Calendar4 = () => {
                   month: 'numeric',
                   day: '2-digit'
                 });
-                const startTime = timeRange.split(' - ')[0]; // Extract the start time
+                const startTime = timeRange.split(' - ')[0];
                 const isBooked = bookedSlots.some((slot) => {
                   return slot.dataday === dateKey && slot.time === startTime;
                 });
@@ -281,24 +292,35 @@ const Calendar4 = () => {
                 <input type="email" value={userData[0]?.email || ''} onChange={handleEmailChange} readOnly required />
               </label>
               <br />
-            </div>
-            <br />
-            <label>
-              ประเภทการจอง
+              <label>
+                ประเภทการจอง
+                <br />
+                <select
+                  value={formData.appointmentType}
+                  onChange={(e) => setFormData({ ...formData, appointmentType: e.target.value })}
+                  required
+                >
+                  <option disabled value="">
+                    โปรดเลือก
+                  </option>
+                  <option value="ฉีดวัคซีน">ฉีดวัคซีน</option>
+                  <option value="ตรวจร่างกายทั่วไป">ตรวจร่างกายทั่วไป</option>
+                  <option value="ตรวจเลือด">ตรวจเลือด/x-ray</option>
+                </select>
+              </label>
               <br />
-              <select
-                value={formData.appointmentType}
-                onChange={(e) => setFormData({ ...formData, appointmentType: e.target.value })}
-                required
-              >
-                <option disabled value="">
-                  โปรดเลือก
-                </option>
-                <option value="ฉีดวีกซีน">ฉีดวัคซีน</option>
-                <option value="ตรวจร่างกายทั่วไป">ตรวจร่างกายทั่วไป</option>
-                <option value="ตรวจเลือด">ตรวจเลือด/x-ray</option>
-              </select>
-            </label>
+              <label>
+                อาการ
+                <br />
+                <input
+                  type="text"
+                  value={formData.symptom}
+                  onChange={(e) => setFormData({ ...formData, symptom: e.target.value })}
+                  required
+                />
+              </label>
+              <br />
+            </div>
             <br />
             {formData.selectedTime && <p>เวลาที่เลือก: {formData.selectedTime}</p>}
             <br />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Modalpet.css'; // Your existing CSS file for styling
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -14,6 +14,20 @@ const formatToBuddhistEra = (date) => {
     return date ? dayjs(date).year(dayjs(date).year() + 543).format('DD/MM/YYYY') : '';
 };
 
+// Function to calculate age in years, months, and days
+const calculateAge = (birthday) => {
+    if (!birthday) return null;
+    const birthDate = dayjs(birthday);
+    const today = dayjs();
+
+    // Calculate the difference in years, months, and days
+    const years = today.diff(birthDate, 'year');
+    const months = today.diff(birthDate.add(years, 'year'), 'month');
+    const days = today.diff(birthDate.add(years, 'year').add(months, 'month'), 'day');
+
+    return `${years} ปี ${months} เดือน ${days} วัน`; // Return formatted string
+};
+
 // Function to convert the date to Christian Era
 const convertToChristianEra = (date) => {
     return date ? dayjs(date).year(dayjs(date).year() - 543) : null;
@@ -25,6 +39,7 @@ function AddProfilePet() {
     const [petType, setPetType] = useState('');
     const [petWeight, setPetWeight] = useState('');
     const [petAge, setPetAge] = useState(dayjs());
+    const [petProfiles, setPetProfiles] = useState([]); // State to hold pet profiles
 
     dayjs.locale('th'); // Set the locale for dayjs
 
@@ -53,10 +68,26 @@ function AddProfilePet() {
             setPetType('');
             setPetWeight('');
             setPetAge(dayjs());
+
+            // Re-fetch pet profiles to include the new entry
+            fetchPetProfiles();
         } catch (error) {
             console.error("There was an error creating the profile pet!", error.response?.data || error.message);
         }
     };
+
+    const fetchPetProfiles = async () => {
+        try {
+            const response = await axios.get('http://localhost:8002/api/profilepet'); // Ensure this URL is correct
+            setPetProfiles(response.data.data); // Set the fetched pet profiles
+        } catch (error) {
+            console.error("There was an error fetching pet profiles!", error.response?.data || error.message);
+        }
+    };
+
+    useEffect(() => {
+        fetchPetProfiles(); // Fetch pet profiles on component mount
+    }, []);
 
     return (
         <div>
@@ -142,6 +173,32 @@ function AddProfilePet() {
                     </div>
                 </div>
             )}
+
+            {/* Display fetched pet profiles */}
+            <div className="pet-profiles">
+                <h2>ข้อมูลสัตว์เลี้ยง</h2>
+                <table className="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ชื่อสัตว์เลี้ยง</th>
+                            <th>ประเภทสัตว์</th>
+                            <th>น้ำหนัก</th>
+                            <th>อายุ</th> {/* Updated column for age */}
+                            <th>แก้ไขอายุ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {petProfiles.map((pet) => (
+                            <tr key={pet.id}>
+                                <td>{pet.name}</td>
+                                <td>{pet.typepet}</td>
+                                <td>{pet.weight}</td>
+                                <td>{calculateAge(pet.birthday)}</td> {/* Display pet's age */}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

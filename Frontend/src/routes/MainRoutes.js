@@ -14,7 +14,7 @@ const Historybooking = Loadable(lazy(() => import('pages/components-overview/His
 const BookingQueue = Loadable(lazy(() => import('pages/components-overview/BookingQueue')));
 const Editprofile = Loadable(lazy(() => import('layout/MainLayout/Header/HeaderContent/Profile/Editprofile.js')));
 const Dashboarduser = Loadable(lazy(() => import('pages/dashboard/timemanagevet.js')));
-const AddProfilePet = Loadable(lazy(() => import('pages/components-overview/addpet/AddProfilePet.js')));
+const AddProfilePet = Loadable(lazy(() => import('pages/addpet/AddProfilePet.js')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 

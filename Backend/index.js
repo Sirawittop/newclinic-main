@@ -320,7 +320,7 @@ app.put("/api/editpassword", async (req, res) => {
 
 
 app.post("/api/booking", async (req, res) => {
-  const { name, phone, email, date, time, type } = req.body;
+  const { name, phone, email, date, time, type, symptoms } = req.body;
 
   // Function to format date without time fractions
   function formatDate(dateString) {
@@ -341,11 +341,13 @@ app.post("/api/booking", async (req, res) => {
     });
   }
 
+
+
   try {
     // Insert into the database
     const [results] = await conn.query(
-      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [name, phone, email, date, time, type, 1]
+      "INSERT INTO reservationqueue (name, numphone, email, dataday, time, reservation_type, status,symptom) VALUES (?, ?, ?, ?, ?, ?, ?,?)",
+      [name, phone, email, date, time, type, 1, symptoms]
     );
 
     // Email content
@@ -427,7 +429,7 @@ app.get('/api/historybooking', async (req, res) => {
     }
 
     const [results] = await conn.query(
-      `SELECT id, DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type, status, doctordescription
+      `SELECT id, DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type, status, doctordescription, symptom
        FROM reservationqueue 
        WHERE email = ?
        ORDER BY id DESC`,  // Sorting by dataday in descending order
@@ -951,6 +953,24 @@ app.post("/api/profilepet", async (req, res) => {
     console.log("error", error);
     res.status(403).json({
       message: "Booking failed",
+      error,
+    });
+  }
+});
+
+
+// select * from profilepet
+app.get("/api/Profilepet", async (req, res) => {
+  try {
+    const [results] = await conn.query("SELECT * FROM profilepet");
+    res.json({
+      message: "Search profile pet success",
+      data: results,
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(403).json({
+      message: "Search profile pet failed",
       error,
     });
   }
