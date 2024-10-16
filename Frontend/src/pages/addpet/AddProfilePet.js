@@ -29,6 +29,10 @@ function AddProfilePet() {
     const [selectedPet, setSelectedPet] = useState(null);
     const [newWeight, setNewWeight] = useState('');
 
+    // New loading and error states
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const toggleForm = () => {
         setShowForm(!showForm);
     };
@@ -73,19 +77,28 @@ function AddProfilePet() {
 
     const handleEditSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
+        setError(null);
+
         const updatedData = {
             ...selectedPet,
             weight: newWeight,
         };
 
+        console.log("Updated Data:", updatedData); // Log the data to be sent
+
         try {
-            await axios.put(`http://localhost:8002/api/profilepet/${selectedPet.id}`, updatedData); // Update request
-            fetchPetProfiles(); // Refresh pet profiles
-            setEditPopup(false); // Hide popup after submission
+            await axios.put(`http://localhost:8002/api/profilepet/${selectedPet.id}`, updatedData);
+            fetchPetProfiles();
+            setEditPopup(false);
         } catch (error) {
-            console.error("There was an error updating the pet's weight!", error.response?.data || error.message);
+            setError("Error updating weight, please try again.");
+            console.error("Error details:", error.response?.data || error.message); // Log detailed error information
+        } finally {
+            setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchPetProfiles();
@@ -173,6 +186,7 @@ function AddProfilePet() {
                             style={{ cursor: 'pointer', fontSize: '24px', position: 'absolute', top: '10px', right: '10px' }}
                         />
                         <h2>แก้ไขน้ำหนักสัตว์</h2>
+                        {error && <p className="error-message">{error}</p>} {/* Error message display */}
                         <form onSubmit={handleEditSubmit}>
                             <div>
                                 <label htmlFor="newWeight">น้ำหนักสัตว์:</label>
@@ -187,7 +201,9 @@ function AddProfilePet() {
                                     required
                                 />
                             </div>
-                            <button type="submit" className="submit-button">บันทึก</button>
+                            <button type="submit" className="submit-button" disabled={loading}>
+                                {loading ? 'Saving...' : 'บันทึก'}
+                            </button>
                         </form>
                     </div>
                 </div>

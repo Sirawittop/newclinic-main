@@ -56,7 +56,7 @@ const Calendar4 = () => {
     maxDate.setDate(currentDate.getDate() + 14);
 
     if (date > maxDate || date < currentDate) {
-      alert('คุณสามารถจองได้เฉพาะในช่วง 14 วันถัดไป');
+      alert('โปรดเลือกวันที่ระหว่างวันนี้และ 14 วันข้างหน้า');
       return;
     }
 
@@ -316,7 +316,7 @@ const Calendar4 = () => {
                   type="text"
                   value={formData.symptom}
                   onChange={(e) => setFormData({ ...formData, symptom: e.target.value })}
-                  required
+
                 />
               </label>
               <br />

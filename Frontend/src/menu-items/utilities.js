@@ -27,7 +27,7 @@ const utilities = {
     },
     {
       id: 'add-profile-pet',
-      title: 'เพิ่มข้อมูลสัตว์เลี้ยง',
+      title: 'เพิ่มสัตว์เลี้ยง/ข้อมูลสัตว์เลี้ยง',
       type: 'item',
       url: '/AddProfilePet',
       icon: PetsIcon
