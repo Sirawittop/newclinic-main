@@ -293,6 +293,7 @@ export default function HomePageAdmin() {
                       <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ชื่อผู้จอง</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px' }}>เบอร์โทร</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ประเภทการจอง</th>
+                      <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ชื่อสัตว์ที่เข้ารับการรักษา</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>สถานะดำเนินการ</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px' }}>หมายเหตุ</th>
                       <th style={{ border: '1px solid #ddd', padding: '8px', whiteSpace: "nowrap" }}>ยกเลิกการจองคิว</th>
@@ -335,6 +336,15 @@ export default function HomePageAdmin() {
                           border: '1px solid #ddd'
                         }}>
                           {reservation.numphone}
+                        </td>
+                        <td style={{
+                          padding: '8px',
+                          fontSize: '14px',
+                          color: '#575757',
+                          whiteSpace: 'nowrap',
+                          border: '1px solid #ddd'
+                        }}>
+                          {reservation.namepet}
                         </td>
                         <td style={{
                           padding: '8px',
