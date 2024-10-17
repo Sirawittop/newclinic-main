@@ -428,7 +428,7 @@ app.get('/api/historybooking', async (req, res) => {
     }
 
     const [results] = await conn.query(
-      `SELECT id, DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type, status, doctordescription, symptom
+      `SELECT id, DATE_FORMAT(dataday, '%Y-%m-%d') AS date, time, reservation_type, status, doctordescription, symptom, namepet
        FROM reservationqueue 
        WHERE email = ?
        ORDER BY id DESC`,  // Sorting by dataday in descending order

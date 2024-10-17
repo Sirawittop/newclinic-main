@@ -108,6 +108,8 @@ const Historybooking = () => {
     return bookingDateTime.diff(now, 'hours') >= 4;
   };
 
+  console.log(bookings)
+
   return (
     <div className="container">
       <table className="table">
@@ -115,6 +117,7 @@ const Historybooking = () => {
           <tr>
             <th className="headerCell">วันที่จอง</th>
             <th className="headerCell">เวลาจอง</th>
+            <th className="headerCell">ชื่อสัตว์ที่เข้ารับการรักษา</th>
             <th className="headerCell">ประเภทการจอง</th>
             <th className="headerCell">สถานะดำเนินการ</th>
             <th className="headerCell">รายละเอียด</th>
@@ -126,6 +129,7 @@ const Historybooking = () => {
             <tr key={index}>
               <td className="cell">{formatDate(booking.date)}</td>
               <td className="cell">{formatTime(booking.time)}</td>
+              <td className="cell">{booking.namepet}</td>
               <td className="cell">{booking.reservation_type}</td>
               <td className="cell centered-cell">{formatstatus(booking.status)}</td>
               <td className="cell centered-cell">
@@ -165,6 +169,7 @@ const Historybooking = () => {
           <div>
             <p>วันที่จอง: {formatDate(selectedBooking.date)}</p>
             <p>เวลาจอง: {formatTime(selectedBooking.time)}</p>
+            <p>ชื่อสัตว์ที่เข้ารับการรักษา: {selectedBooking.petname}</p>
             <p>จองคิวรักษาอะไร: {selectedBooking.reservation_type}</p>
             <p>สถานะดำเนินการ: {formatstatus(selectedBooking.status)}</p>
             <p>รายละเอียดการเข้ารับการรักษา: {selectedBooking.doctordescription}</p>

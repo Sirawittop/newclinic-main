@@ -132,6 +132,10 @@ function AddProfilePet() {
                                     <option value="">เลือกประเภท</option>
                                     <option value="สุนัข">สุนัข</option>
                                     <option value="แมว">แมว</option>
+                                    <option value="หนู">หนู</option>
+                                    <option value="นก">นก</option>
+                                    <option value="กระต่าย">กระต่าย</option>
+                                    <option value="กระรอก">กระรอก</option>
                                 </select>
                             </div>
                             <div>
