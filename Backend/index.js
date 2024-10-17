@@ -738,16 +738,65 @@ app.delete("/api/vetcancelbooking/:id", async (req, res) => {
     // Delete the booking
     await conn.query("DELETE FROM reservationqueue WHERE id = ?", [id]);
 
+    // Parse the cancellation date from the booking
+    const cancellationDate = new Date(dataday);
+
+    // add 1 day to the cancellation date
+    cancellationDate.setDate(cancellationDate.getDate() + 1);
+
+    // Format the date to match the format in your database (e.g., 'YYYY-MM-DD')
+    const formattedCancellationDate = cancellationDate.toISOString().split('T')[0];
+
+    // Query for booked times on the cancellation date
+    const [bookedTimes] = await conn.query(
+      "SELECT time FROM reservationqueue WHERE dataday = ?",
+      [formattedCancellationDate]
+    );
+
+    console.log(bookedTimes)
+
+    // List of all possible time slots
+    const allTimes = [
+      '12:00 - 12:30',
+      '12:30 - 13:00',
+      '13:00 - 13:30',
+      '13:30 - 14:00',
+      '14:00 - 14:30',
+      '14:30 - 15:00',
+      '15:00 - 15:30',
+      '15:30 - 16:00',
+      '16:00 - 16:30',
+      '16:30 - 17:00',
+      '17:00 - 17:30',
+      '17:30 - 18:00',
+      '18:00 - 18:30',
+      '18:30 - 19:00',
+      '19:00 - 19:30',
+    ];
+
+    // Extract only the time ranges from the booked times
+    const bookedTimeList = bookedTimes.map(booking => booking.time);
+
+    // console.log(bookedTimes)
+
+    // Find available time slots by excluding the booked ones
+    const availableTimes = allTimes.filter(time => !bookedTimeList.includes(time));
+
+    // console.log(availableTimes);
+
+
     // Send cancellation email using the existing sendEmail function
     const subject = "แจ้งยกเลิกการจองคิวคลินิกบ้านแสนสุข";
     const text = `สวัสดีคุณ ${name}, 
 
-การจองของคุณสำหรับวันที่ ${formatDate(dataday)} เวลา ${time} ประเภทการรักษา ${reservation_type} ถูกยกเลิกเรียบร้อยแล้ว
+การจองของคุณสำหรับวันที่ ${formatDate(dataday)} เวลา ${time} ประเภทการรักษา ${reservation_type} ถูกยกเลิกเรียบร้อยแล้วในวันที่ ${formatDate(dataday)}.
 
-ขออภัยในความไม่สะดวก หากต้องการจองใหม่ โปรดเข้าสู่ระบบเว็บไซต์ของเรา
+ช่วงเวลาที่ว่างสำหรับการจองในวันที่ ${formatDate(cancellationDate)} มีดังนี้:
+${availableTimes.length > 0 ? availableTimes.join(', ') : 'ไม่มีช่วงเวลาที่ว่างสำหรับวันนี้'}
+
+หากต้องการจองใหม่ โปรดเข้าสู่ระบบเว็บไซต์ของเรา
 
 หากมีคำถามเพิ่มเติม โปรดติดต่อเราได้ที่ 📞 054 073 883 หรือ 093 694 4451
-
 
 คลินิกบ้านแสนสุข`;
 
@@ -755,6 +804,7 @@ app.delete("/api/vetcancelbooking/:id", async (req, res) => {
 
     res.json({
       message: "Cancel queue booking success, cancellation email sent",
+      availableTimes, // Send available times for the cancellation date in the response
     });
   } catch (error) {
     console.error("error", error);
@@ -764,6 +814,10 @@ app.delete("/api/vetcancelbooking/:id", async (req, res) => {
     });
   }
 });
+
+
+
+
 
 app.post("/api/doctordescriptionandReservation", async (req, res) => {
   const { id, doctordescription, formData } = req.body;
@@ -1020,3 +1074,4 @@ app.get("/api/namepet", async (req, res) => {
     });
   }
 });
+

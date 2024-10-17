@@ -470,7 +470,6 @@ export default function HomePageAdmin() {
                 onClick={handleModalOk}
                 style={{ marginLeft: '8px' }}
                 disabled={reservationData?.find(res => res.id === reservationId)?.status === 2 || reservationData?.find(res => res.id === reservationId)?.status === 3}
-
               >
                 บันทึก
               </Button>
