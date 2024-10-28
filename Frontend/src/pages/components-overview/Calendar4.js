@@ -65,7 +65,7 @@ const Calendar4 = () => {
     setSelectedDate(date);
     let timeRange = [];
     switch (date.getDay()) {
-      case 0: // Sunday
+
       case 3: // Wednesday
         timeRange = 'วันนี้ร้านปิดค่ะ คุณสามารถจองคิวได้ในวันอื่นได้ค่ะ';
         break;
