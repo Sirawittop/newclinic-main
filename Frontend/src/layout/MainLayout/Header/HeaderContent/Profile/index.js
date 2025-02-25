@@ -65,6 +65,7 @@ const Profile = () => {
       })
       .then((response) => {
         setUserData(response.data);
+        localStorage.setItem('userId', JSON.stringify(response.data.users[0].id));
       });
   }, []);
 

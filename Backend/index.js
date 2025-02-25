@@ -219,7 +219,7 @@ app.get("/api/usertoken", async (req, res) => {
     }
 
     const [results] = await conn.query(
-      "SELECT name , numphone , email , role FROM users where email = ?",
+      "SELECT id, name , numphone , email , role FROM users where email = ?",
       user.email
     );
     res.json({
@@ -988,12 +988,12 @@ setInterval(() => {
 
 // post api for profilepet
 app.post("/api/profilepet", async (req, res) => {
-  const { name, typepet, birthday, weight } = req.body; // Fixed 'weitht' to 'weight'
+  const { name, typepet, birthday, weight, userId } = req.body;
 
   try {
     const [result] = await conn.query(
-      "INSERT INTO profilepet (name, typepet, birthday, weight) VALUES (?, ?, ?, ?)",
-      [name, typepet, birthday, weight]
+      "INSERT INTO profilepet (name, typepet, birthday, weight, ownerId) VALUES (?, ?, ?, ?, ?)",
+      [name, typepet, birthday, weight, userId]
     );
 
     // Respond with a success message

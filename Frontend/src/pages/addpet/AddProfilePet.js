@@ -44,6 +44,7 @@ function AddProfilePet() {
             typepet: petType,
             birthday: petAge.format('YYYY-MM-DD'), // Keep the birthday
             weight: petWeight,
+            userId: localStorage.getItem('userId'),
         };
 
         try {
